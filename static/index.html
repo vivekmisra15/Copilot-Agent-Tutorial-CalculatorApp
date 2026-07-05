@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern Calculator</title>
+    <title>Scientific Calculator</title>
     <style>
       :root {
         color-scheme: dark;
         --bg: #0f172a;
-        --panel: #111827;
         --accent: #38bdf8;
         --accent-2: #818cf8;
         --text: #f8fafc;
@@ -26,7 +25,7 @@
         padding: 24px;
       }
       .card {
-        width: min(420px, 100%);
+        width: min(560px, 100%);
         background: rgba(17, 24, 39, 0.9);
         border: 1px solid rgba(148, 163, 184, 0.2);
         border-radius: 24px;
@@ -45,12 +44,12 @@
       }
       .expression { color: var(--muted); font-size: 16px; min-height: 24px; }
       .result { font-size: 34px; font-weight: 700; word-break: break-all; }
-      .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+      .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
       button {
         border: 0;
-        border-radius: 16px;
-        padding: 16px;
-        font-size: 20px;
+        border-radius: 14px;
+        padding: 13px;
+        font-size: 17px;
         font-weight: 600;
         cursor: pointer;
         color: var(--text);
@@ -60,7 +59,22 @@
       button:hover { transform: translateY(-1px); }
       button:active { transform: translateY(1px); }
       .secondary { background: #334155; }
-      .wide { grid-column: span 2; }
+      .history {
+        margin-top: 14px;
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+        padding-top: 12px;
+      }
+      .history-title { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+      .history-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+      .history-list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        background: rgba(15, 23, 42, 0.65);
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 13px;
+      }
       .status { margin-top: 12px; color: var(--muted); font-size: 13px; min-height: 18px; }
     </style>
   </head>
@@ -71,34 +85,58 @@
         <div class="result" id="result">0</div>
       </div>
       <div class="grid">
-        <button class="secondary" data-action="clear">C</button>
+        <button class="secondary" data-action="clear">AC</button>
         <button class="secondary" data-action="delete">⌫</button>
-        <button class="secondary" data-action="percent">%</button>
+        <button class="secondary" id="modeBtn" data-action="mode">RAD</button>
+        <button class="secondary" data-value="pi">π</button>
         <button data-action="operator" data-value="/">÷</button>
+
+        <button data-value="sin(">sin</button>
+        <button data-value="cos(">cos</button>
+        <button data-value="tan(">tan</button>
+        <button data-value="abs(">abs</button>
+        <button data-action="operator" data-value="*">×</button>
+
+        <button data-value="log(">log</button>
+        <button data-value="ln(">ln</button>
+        <button data-value="factorial(">x!</button>
+        <button data-value="(">(</button>
+        <button data-action="operator" data-value="-">−</button>
+
         <button data-value="7">7</button>
         <button data-value="8">8</button>
         <button data-value="9">9</button>
-        <button data-action="operator" data-value="*">×</button>
+        <button data-value=")">)</button>
+        <button data-action="operator" data-value="+">+</button>
+
         <button data-value="4">4</button>
         <button data-value="5">5</button>
         <button data-value="6">6</button>
-        <button data-action="operator" data-value="-">−</button>
+        <button data-value=".">.</button>
+        <button id="equals">=</button>
+
         <button data-value="1">1</button>
         <button data-value="2">2</button>
         <button data-value="3">3</button>
-        <button data-action="operator" data-value="+">+</button>
         <button data-value="0">0</button>
-        <button data-value=".">.</button>
-        <button class="wide" id="equals">=</button>
+        <button data-value="^">^</button>
       </div>
       <div class="status" id="status">Ready</div>
+      <div class="history">
+        <div class="history-title">History</div>
+        <ul class="history-list" id="historyList"></ul>
+      </div>
     </div>
 
     <script>
       const expressionEl = document.getElementById('expression');
       const resultEl = document.getElementById('result');
       const statusEl = document.getElementById('status');
+      const historyListEl = document.getElementById('historyList');
+      const modeBtn = document.getElementById('modeBtn');
       let expression = '';
+      let angleMode = 'rad';
+      let history = [];
 
       function updateDisplay(value, resultValue = '') {
         expressionEl.textContent = value || '0';
@@ -109,8 +147,48 @@
         statusEl.textContent = message;
       }
 
+      function renderHistory() {
+        historyListEl.innerHTML = history.slice(0, 8).map((item) => `
+          <li>
+            <span>${item.expression}</span>
+            <strong>${item.result}</strong>
+          </li>
+        `).join('');
+      }
+
+      function appendValue(value) {
+        expression += value;
+        updateDisplay(expression, '');
+      }
+
+      function handleCalculate() {
+        if (!expression.trim()) {
+          setStatus('Enter an expression');
+          return;
+        }
+
+        fetch('/api/calc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ expression, mode: angleMode })
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || 'Calculation failed');
+            expression = String(data.result);
+            updateDisplay(expression, data.result);
+            history.unshift({ expression: data.expression, result: data.result });
+            history = history.slice(0, 8);
+            renderHistory();
+            setStatus('Computed');
+          })
+          .catch((error) => {
+            setStatus(error.message);
+          });
+      }
+
       document.querySelectorAll('button').forEach((btn) => {
-        btn.addEventListener('click', async () => {
+        btn.addEventListener('click', () => {
           const value = btn.dataset.value;
           const action = btn.dataset.action;
 
@@ -128,41 +206,69 @@
             return;
           }
 
-          if (action === 'percent') {
-            expression = expression ? `(${expression})/100` : '';
-            updateDisplay(expression || '0', '0');
-            setStatus('Percent mode');
-            return;
-          }
-
-          if (action === 'operator') {
-            expression += value;
-            updateDisplay(expression, '0');
+          if (action === 'mode') {
+            angleMode = angleMode === 'deg' ? 'rad' : 'deg';
+            modeBtn.textContent = angleMode.toUpperCase();
+            setStatus(`Angle mode: ${angleMode.toUpperCase()}`);
             return;
           }
 
           if (btn.id === 'equals') {
-            try {
-              const response = await fetch('/api/calc', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ expression })
-              });
-              const data = await response.json();
-              if (!response.ok) throw new Error(data.detail || 'Calculation failed');
-              expression = String(data.result);
-              updateDisplay(expression, data.result);
-              setStatus(data.result !== null ? 'Computed' : 'Error');
-            } catch (error) {
-              setStatus(error.message);
-            }
+            handleCalculate();
             return;
           }
 
-          expression += value;
-          updateDisplay(expression, '0');
+          if (action === 'operator') {
+            appendValue(value);
+            return;
+          }
+
+          appendValue(value || '');
         });
       });
+
+      document.addEventListener('keydown', (event) => {
+        const key = event.key;
+        const recognized = new Set(['0','1','2','3','4','5','6','7','8','9','+','-','*','/','^','(',')','.','!']);
+        const keyMap = {
+          s: 'sin(',
+          c: 'cos(',
+          t: 'tan(',
+          l: 'log(',
+          n: 'ln(',
+          a: 'abs(',
+          p: 'pi',
+          e: 'e',
+          Enter: '=',
+          '=': '=',
+          Escape: 'clear',
+          Backspace: 'delete',
+        };
+
+        if (key in keyMap) {
+          event.preventDefault();
+          if (keyMap[key] === '=') {
+            handleCalculate();
+          } else if (keyMap[key] === 'clear') {
+            expression = '';
+            updateDisplay('0', '0');
+            setStatus('Cleared');
+          } else if (keyMap[key] === 'delete') {
+            expression = expression.slice(0, -1);
+            updateDisplay(expression || '0', '0');
+          } else {
+            appendValue(keyMap[key]);
+          }
+          return;
+        }
+
+        if (recognized.has(key)) {
+          event.preventDefault();
+          appendValue(key);
+        }
+      });
+
+      renderHistory();
     </script>
   </body>
 </html>
