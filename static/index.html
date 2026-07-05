@@ -3,272 +3,560 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scientific Calculator</title>
+    <title>Graphing Calculator</title>
     <style>
       :root {
-        color-scheme: dark;
-        --bg: #0f172a;
-        --accent: #38bdf8;
-        --accent-2: #818cf8;
-        --text: #f8fafc;
-        --muted: #94a3b8;
+        --shell: #242b3a;
+        --shell-dark: #1a2030;
+        --screen: #b5d3a0;
+        --screen-dark: #8eb177;
+        --btn: #4b556a;
+        --btn-alt: #616f88;
+        --btn-func: #7b4f43;
+        --btn-accent: #2a78a9;
+        --txt: #eef2ff;
+        --txt-dark: #0f172a;
       }
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, var(--bg), #1e293b);
-        color: var(--text);
         min-height: 100vh;
         display: grid;
         place-items: center;
-        padding: 24px;
+        padding: 20px;
+        color: var(--txt);
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: radial-gradient(circle at 20% 20%, #233550, #111827 64%);
       }
-      .card {
-        width: min(560px, 100%);
-        background: rgba(17, 24, 39, 0.9);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 24px;
-        padding: 24px;
-        box-shadow: 0 20px 45px rgba(2, 6, 23, 0.45);
+      .device {
+        width: min(820px, 100%);
+        border-radius: 26px;
+        padding: 18px;
+        background: linear-gradient(180deg, var(--shell), var(--shell-dark));
+        border: 2px solid #101827;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
       }
-      .display {
-        background: #020617;
-        border-radius: 16px;
-        padding: 16px;
-        min-height: 96px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        margin-bottom: 16px;
-      }
-      .expression { color: var(--muted); font-size: 16px; min-height: 24px; }
-      .result { font-size: 34px; font-weight: 700; word-break: break-all; }
-      .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-      button {
-        border: 0;
-        border-radius: 14px;
-        padding: 13px;
-        font-size: 17px;
-        font-weight: 600;
-        cursor: pointer;
-        color: var(--text);
-        background: linear-gradient(135deg, var(--accent-2), var(--accent));
-        transition: transform 0.15s ease, opacity 0.15s ease;
-      }
-      button:hover { transform: translateY(-1px); }
-      button:active { transform: translateY(1px); }
-      .secondary { background: #334155; }
-      .history {
-        margin-top: 14px;
-        border-top: 1px solid rgba(148, 163, 184, 0.2);
-        padding-top: 12px;
-      }
-      .history-title { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
-      .history-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
-      .history-list li {
+      .brand-row {
         display: flex;
         justify-content: space-between;
-        gap: 8px;
-        background: rgba(15, 23, 42, 0.65);
-        border-radius: 10px;
-        padding: 8px 10px;
+        align-items: center;
+        margin-bottom: 10px;
         font-size: 13px;
+        letter-spacing: 0.4px;
       }
-      .status { margin-top: 12px; color: var(--muted); font-size: 13px; min-height: 18px; }
+      .brand-chip {
+        background: #3f4658;
+        border-radius: 12px;
+        padding: 4px 10px;
+      }
+      .screen-panel {
+        border-radius: 16px;
+        padding: 12px;
+        background: linear-gradient(180deg, var(--screen), var(--screen-dark));
+        border: 2px solid #5f7e4e;
+      }
+      .screen-toolbar {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .screen-toolbar input,
+      .screen-toolbar button,
+      .expression-input {
+        width: 100%;
+        border: 1px solid #5c7950;
+        background: rgba(233, 248, 218, 0.85);
+        color: var(--txt-dark);
+        border-radius: 8px;
+        padding: 7px 8px;
+        font-weight: 600;
+      }
+      .screen-toolbar button {
+        cursor: pointer;
+      }
+      canvas {
+        width: 100%;
+        height: 230px;
+        background: rgba(230, 246, 213, 0.88);
+        border-radius: 10px;
+        border: 1px solid #5e7850;
+      }
+      .readout {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 8px;
+      }
+      .readout-block {
+        background: rgba(238, 250, 225, 0.92);
+        border-radius: 8px;
+        color: var(--txt-dark);
+        border: 1px solid #5b7650;
+        padding: 8px;
+      }
+      .label {
+        font-size: 11px;
+        text-transform: uppercase;
+        opacity: 0.75;
+      }
+      .value {
+        font-size: 18px;
+        font-weight: 700;
+        min-height: 22px;
+        word-break: break-all;
+      }
+      .keypad {
+        margin-top: 14px;
+      }
+      .memory-row,
+      .grid {
+        display: grid;
+        gap: 8px;
+      }
+      .memory-row {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        margin-bottom: 8px;
+      }
+      .grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .k-btn {
+        border: 0;
+        border-radius: 10px;
+        padding: 11px 8px;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--txt);
+        background: var(--btn);
+        cursor: pointer;
+      }
+      .k-btn.alt {
+        background: var(--btn-alt);
+      }
+      .k-btn.func {
+        background: var(--btn-func);
+      }
+      .k-btn.accent {
+        background: var(--btn-accent);
+      }
+      .history {
+        margin-top: 12px;
+        border-top: 1px solid #45506a;
+        padding-top: 10px;
+      }
+      .history ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 6px;
+        max-height: 140px;
+        overflow: auto;
+      }
+      .history li {
+        display: flex;
+        justify-content: space-between;
+        background: #2b3449;
+        border-radius: 8px;
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+      .status {
+        margin-top: 8px;
+        font-size: 12px;
+        opacity: 0.9;
+      }
+      @media (max-width: 700px) {
+        .screen-toolbar {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .readout {
+          grid-template-columns: 1fr;
+        }
+        .memory-row {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
     </style>
   </head>
   <body>
-    <div class="card">
-      <div class="display">
-        <div class="expression" id="expression">0</div>
-        <div class="result" id="result">0</div>
+    <main class="device">
+      <div class="brand-row">
+        <span class="brand-chip">GRAPHING CALCULATOR</span>
+        <span id="modeLabel">MODE: RAD</span>
       </div>
-      <div class="grid">
-        <button class="secondary" data-action="clear">AC</button>
-        <button class="secondary" data-action="delete">⌫</button>
-        <button class="secondary" id="modeBtn" data-action="mode">RAD</button>
-        <button class="secondary" data-value="pi">π</button>
-        <button data-action="operator" data-value="/">÷</button>
 
-        <button data-value="sin(">sin</button>
-        <button data-value="cos(">cos</button>
-        <button data-value="tan(">tan</button>
-        <button data-value="abs(">abs</button>
-        <button data-action="operator" data-value="*">×</button>
+      <section class="screen-panel">
+        <div class="screen-toolbar">
+          <input id="xMin" type="number" value="-10" step="1" />
+          <input id="xMax" type="number" value="10" step="1" />
+          <input id="samples" type="number" value="300" min="40" max="2000" step="10" />
+          <button id="graphBtn">GRAPH</button>
+          <button id="clearGraphBtn">CLEAR</button>
+        </div>
+        <input id="expressionInput" class="expression-input" placeholder="Enter expression for y = f(x), for example: sin(x)" />
+        <canvas id="graphCanvas" width="760" height="230"></canvas>
+        <div class="readout">
+          <div class="readout-block">
+            <div class="label">Expression</div>
+            <div class="value" id="expressionValue">0</div>
+          </div>
+          <div class="readout-block">
+            <div class="label">Result / Memory</div>
+            <div class="value" id="resultValue">0</div>
+          </div>
+        </div>
+      </section>
 
-        <button data-value="log(">log</button>
-        <button data-value="ln(">ln</button>
-        <button data-value="factorial(">x!</button>
-        <button data-value="(">(</button>
-        <button data-action="operator" data-value="-">−</button>
+      <section class="keypad">
+        <div class="memory-row">
+          <button class="k-btn alt" data-memory="MC">MC</button>
+          <button class="k-btn alt" data-memory="MR">MR</button>
+          <button class="k-btn alt" data-memory="M+">M+</button>
+          <button class="k-btn alt" data-memory="M-">M-</button>
+          <button class="k-btn alt" data-bank="M1">M1</button>
+          <button class="k-btn alt" data-bank="M2">M2</button>
+          <button class="k-btn alt" data-bank="M3">M3</button>
+          <button class="k-btn alt" id="modeBtn">RAD/DEG</button>
+        </div>
 
-        <button data-value="7">7</button>
-        <button data-value="8">8</button>
-        <button data-value="9">9</button>
-        <button data-value=")">)</button>
-        <button data-action="operator" data-value="+">+</button>
+        <div class="grid">
+          <button class="k-btn func" data-value="sin(">sin</button>
+          <button class="k-btn func" data-value="cos(">cos</button>
+          <button class="k-btn func" data-value="tan(">tan</button>
+          <button class="k-btn func" data-value="asin(">asin</button>
+          <button class="k-btn func" data-value="acos(">acos</button>
+          <button class="k-btn func" data-value="atan(">atan</button>
 
-        <button data-value="4">4</button>
-        <button data-value="5">5</button>
-        <button data-value="6">6</button>
-        <button data-value=".">.</button>
-        <button id="equals">=</button>
+          <button class="k-btn func" data-value="log(">log</button>
+          <button class="k-btn func" data-value="ln(">ln</button>
+          <button class="k-btn func" data-value="pow10(">10^x</button>
+          <button class="k-btn func" data-value="exp(">e^x</button>
+          <button class="k-btn func" data-value="inv(">1/x</button>
+          <button class="k-btn func" data-value="sqrt(">sqrt</button>
 
-        <button data-value="1">1</button>
-        <button data-value="2">2</button>
-        <button data-value="3">3</button>
-        <button data-value="0">0</button>
-        <button data-value="^">^</button>
-      </div>
+          <button class="k-btn alt" data-action="clear">AC</button>
+          <button class="k-btn alt" data-action="delete">DEL</button>
+          <button class="k-btn alt" data-value="(">(</button>
+          <button class="k-btn alt" data-value=")">)</button>
+          <button class="k-btn alt" data-value="pi">pi</button>
+          <button class="k-btn alt" data-value="e">e</button>
+
+          <button class="k-btn" data-value="7">7</button>
+          <button class="k-btn" data-value="8">8</button>
+          <button class="k-btn" data-value="9">9</button>
+          <button class="k-btn accent" data-value="/">/</button>
+          <button class="k-btn accent" data-value="*">*</button>
+          <button class="k-btn func" data-value="factorial(">x!</button>
+
+          <button class="k-btn" data-value="4">4</button>
+          <button class="k-btn" data-value="5">5</button>
+          <button class="k-btn" data-value="6">6</button>
+          <button class="k-btn accent" data-value="-">-</button>
+          <button class="k-btn accent" data-value="+">+</button>
+          <button class="k-btn func" data-value="^2">x^2</button>
+
+          <button class="k-btn" data-value="1">1</button>
+          <button class="k-btn" data-value="2">2</button>
+          <button class="k-btn" data-value="3">3</button>
+          <button class="k-btn" data-value="0">0</button>
+          <button class="k-btn" data-value=".">.</button>
+          <button class="k-btn accent" id="equalsBtn">ENTER</button>
+        </div>
+      </section>
+
+      <section class="history">
+        <div>History</div>
+        <ul id="historyList"></ul>
+      </section>
       <div class="status" id="status">Ready</div>
-      <div class="history">
-        <div class="history-title">History</div>
-        <ul class="history-list" id="historyList"></ul>
-      </div>
-    </div>
+    </main>
 
     <script>
-      const expressionEl = document.getElementById('expression');
-      const resultEl = document.getElementById('result');
-      const statusEl = document.getElementById('status');
-      const historyListEl = document.getElementById('historyList');
-      const modeBtn = document.getElementById('modeBtn');
-      let expression = '';
-      let angleMode = 'rad';
+      const expressionInput = document.getElementById("expressionInput");
+      const expressionValue = document.getElementById("expressionValue");
+      const resultValue = document.getElementById("resultValue");
+      const historyList = document.getElementById("historyList");
+      const modeLabel = document.getElementById("modeLabel");
+      const statusEl = document.getElementById("status");
+      const xMinInput = document.getElementById("xMin");
+      const xMaxInput = document.getElementById("xMax");
+      const samplesInput = document.getElementById("samples");
+      const graphCanvas = document.getElementById("graphCanvas");
+      const ctx = graphCanvas.getContext("2d");
+
+      let mode = "rad";
+      let activeBank = "M1";
+      let memoryBanks = { M1: 0, M2: 0, M3: 0 };
       let history = [];
 
-      function updateDisplay(value, resultValue = '') {
-        expressionEl.textContent = value || '0';
-        resultEl.textContent = resultValue || '0';
-      }
-
-      function setStatus(message) {
+      function updateStatus(message) {
         statusEl.textContent = message;
       }
 
-      function renderHistory() {
-        historyListEl.innerHTML = history.slice(0, 8).map((item) => `
-          <li>
-            <span>${item.expression}</span>
-            <strong>${item.result}</strong>
-          </li>
-        `).join('');
+      function updateReadout(result = "") {
+        const expression = expressionInput.value || "0";
+        expressionValue.textContent = expression;
+        resultValue.textContent = result || `${activeBank}: ${memoryBanks[activeBank]}`;
       }
 
-      function appendValue(value) {
-        expression += value;
-        updateDisplay(expression, '');
+      function addHistory(label, value) {
+        history.unshift({ label, value });
+        history = history.slice(0, 12);
+        historyList.innerHTML = history
+          .map((item) => `<li><span>${item.label}</span><strong>${item.value}</strong></li>`)
+          .join("");
       }
 
-      function handleCalculate() {
-        if (!expression.trim()) {
-          setStatus('Enter an expression');
+      function appendToken(token) {
+        expressionInput.value += token;
+        updateReadout();
+      }
+
+      function clearGraph() {
+        ctx.fillStyle = "#e8f7d4";
+        ctx.fillRect(0, 0, graphCanvas.width, graphCanvas.height);
+      }
+
+      function drawGrid(xMin, xMax, yMin, yMax) {
+        ctx.strokeStyle = "#b5c9a3";
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 10; i += 1) {
+          const x = (i / 10) * graphCanvas.width;
+          const y = (i / 10) * graphCanvas.height;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, graphCanvas.height);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(graphCanvas.width, y);
+          ctx.stroke();
+        }
+
+        const zeroX = ((0 - xMin) / (xMax - xMin)) * graphCanvas.width;
+        const zeroY = ((yMax - 0) / (yMax - yMin)) * graphCanvas.height;
+        ctx.strokeStyle = "#3d5a35";
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(zeroX, 0);
+        ctx.lineTo(zeroX, graphCanvas.height);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, zeroY);
+        ctx.lineTo(graphCanvas.width, zeroY);
+        ctx.stroke();
+      }
+
+      function drawSegments(segments, xMin, xMax, yMin, yMax) {
+        ctx.strokeStyle = "#1f4f93";
+        ctx.lineWidth = 2;
+        segments.forEach((segment) => {
+          if (!segment.length) {
+            return;
+          }
+          ctx.beginPath();
+          segment.forEach(([x, y], index) => {
+            const px = ((x - xMin) / (xMax - xMin)) * graphCanvas.width;
+            const py = ((yMax - y) / (yMax - yMin)) * graphCanvas.height;
+            if (index === 0) {
+              ctx.moveTo(px, py);
+            } else {
+              ctx.lineTo(px, py);
+            }
+          });
+          ctx.stroke();
+        });
+      }
+
+      async function handleCalculate() {
+        const expression = expressionInput.value.trim();
+        if (!expression) {
+          updateStatus("Enter an expression first");
+          return;
+        }
+        try {
+          const response = await fetch("/api/calc", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ expression, mode }),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "Calculation failed");
+          }
+          expressionInput.value = String(data.result);
+          updateReadout(String(data.result));
+          addHistory(data.expression, data.result);
+          updateStatus("Calculated");
+        } catch (error) {
+          updateStatus(error.message);
+        }
+      }
+
+      async function handleGraph() {
+        const expression = expressionInput.value.trim();
+        if (!expression) {
+          updateStatus("Enter an expression before graphing");
           return;
         }
 
-        fetch('/api/calc', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ expression, mode: angleMode })
-        })
-          .then(async (response) => {
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.detail || 'Calculation failed');
-            expression = String(data.result);
-            updateDisplay(expression, data.result);
-            history.unshift({ expression: data.expression, result: data.result });
-            history = history.slice(0, 8);
-            renderHistory();
-            setStatus('Computed');
-          })
-          .catch((error) => {
-            setStatus(error.message);
+        const xMin = Number(xMinInput.value);
+        const xMax = Number(xMaxInput.value);
+        const samples = Number(samplesInput.value);
+
+        try {
+          const response = await fetch("/api/graph", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ expression, mode, x_min: xMin, x_max: xMax, samples }),
           });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "Graph failed");
+          }
+
+          let yMin = Number(data.y_min);
+          let yMax = Number(data.y_max);
+          if (yMin === yMax) {
+            yMin -= 1;
+            yMax += 1;
+          }
+          clearGraph();
+          drawGrid(data.x_min, data.x_max, yMin, yMax);
+          drawSegments(data.segments, data.x_min, data.x_max, yMin, yMax);
+          addHistory(`y=${expression}`, `window[${xMin}, ${xMax}]`);
+          updateStatus("Graph plotted");
+        } catch (error) {
+          updateStatus(error.message);
+        }
       }
 
-      document.querySelectorAll('button').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const value = btn.dataset.value;
-          const action = btn.dataset.action;
+      async function refreshMemory() {
+        const response = await fetch("/api/memory");
+        const data = await response.json();
+        memoryBanks = data.banks;
+        updateReadout();
+      }
 
-          if (action === 'clear') {
-            expression = '';
-            updateDisplay('0', '0');
-            setStatus('Cleared');
-            return;
+      async function handleMemory(operation) {
+        try {
+          const expression = expressionInput.value.trim();
+          const payload = { operation, bank: activeBank, mode };
+
+          if (operation === "M+" || operation === "M-") {
+            if (expression) {
+              payload.expression = expression;
+            } else {
+              payload.value = 0;
+            }
           }
 
-          if (action === 'delete') {
-            expression = expression.slice(0, -1);
-            updateDisplay(expression || '0', '0');
-            setStatus('Deleted');
-            return;
+          const response = await fetch("/api/memory", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "Memory operation failed");
           }
 
-          if (action === 'mode') {
-            angleMode = angleMode === 'deg' ? 'rad' : 'deg';
-            modeBtn.textContent = angleMode.toUpperCase();
-            setStatus(`Angle mode: ${angleMode.toUpperCase()}`);
-            return;
+          memoryBanks = data.banks;
+          if (operation === "MR") {
+            appendToken(String(data.value));
           }
+          addHistory(`${operation} ${activeBank}`, data.value);
+          updateReadout();
+          updateStatus(`${operation} applied to ${activeBank}`);
+        } catch (error) {
+          updateStatus(error.message);
+        }
+      }
 
-          if (btn.id === 'equals') {
-            handleCalculate();
-            return;
-          }
+      document.getElementById("equalsBtn").addEventListener("click", handleCalculate);
+      document.getElementById("graphBtn").addEventListener("click", handleGraph);
+      document.getElementById("clearGraphBtn").addEventListener("click", () => {
+        clearGraph();
+        updateStatus("Graph cleared");
+      });
+      document.getElementById("modeBtn").addEventListener("click", () => {
+        mode = mode === "rad" ? "deg" : "rad";
+        modeLabel.textContent = `MODE: ${mode.toUpperCase()}`;
+        updateStatus(`Mode switched to ${mode.toUpperCase()}`);
+      });
 
-          if (action === 'operator') {
-            appendValue(value);
-            return;
-          }
-
-          appendValue(value || '');
+      document.querySelectorAll("[data-bank]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeBank = button.dataset.bank;
+          updateReadout();
+          updateStatus(`Using ${activeBank}`);
         });
       });
 
-      document.addEventListener('keydown', (event) => {
-        const key = event.key;
-        const recognized = new Set(['0','1','2','3','4','5','6','7','8','9','+','-','*','/','^','(',')','.','!']);
-        const keyMap = {
-          s: 'sin(',
-          c: 'cos(',
-          t: 'tan(',
-          l: 'log(',
-          n: 'ln(',
-          a: 'abs(',
-          p: 'pi',
-          e: 'e',
-          Enter: '=',
-          '=': '=',
-          Escape: 'clear',
-          Backspace: 'delete',
-        };
+      document.querySelectorAll("[data-memory]").forEach((button) => {
+        button.addEventListener("click", () => {
+          handleMemory(button.dataset.memory);
+        });
+      });
 
-        if (key in keyMap) {
-          event.preventDefault();
-          if (keyMap[key] === '=') {
-            handleCalculate();
-          } else if (keyMap[key] === 'clear') {
-            expression = '';
-            updateDisplay('0', '0');
-            setStatus('Cleared');
-          } else if (keyMap[key] === 'delete') {
-            expression = expression.slice(0, -1);
-            updateDisplay(expression || '0', '0');
-          } else {
-            appendValue(keyMap[key]);
+      document.querySelectorAll("[data-value]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const token = button.dataset.value;
+          if (token === "^2") {
+            appendToken("^2");
+            return;
           }
+          appendToken(token);
+        });
+      });
+
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.action;
+          if (action === "clear") {
+            expressionInput.value = "";
+            updateReadout("0");
+          }
+          if (action === "delete") {
+            expressionInput.value = expressionInput.value.slice(0, -1);
+            updateReadout();
+          }
+        });
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          handleCalculate();
           return;
         }
-
-        if (recognized.has(key)) {
+        if (event.key.toLowerCase() === "g") {
           event.preventDefault();
-          appendValue(key);
+          handleGraph();
+          return;
+        }
+        if (event.key === "Escape") {
+          expressionInput.value = "";
+          updateReadout("0");
+          return;
+        }
+        if (event.key === "Backspace" && document.activeElement !== expressionInput) {
+          event.preventDefault();
+          expressionInput.value = expressionInput.value.slice(0, -1);
+          updateReadout();
         }
       });
 
-      renderHistory();
+      clearGraph();
+      refreshMemory();
+      updateReadout();
     </script>
   </body>
 </html>
