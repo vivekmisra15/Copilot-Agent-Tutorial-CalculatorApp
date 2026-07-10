@@ -34,7 +34,7 @@
         place-items: center;
         padding: 24px;
         color: var(--txt);
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        font-family: "Verdana", "Trebuchet MS", sans-serif;
         background:
           radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.42), transparent 22%),
           linear-gradient(180deg, #d7dde5, #c7ced8 36%, #afb8c4 100%);
@@ -44,9 +44,9 @@
         font: inherit;
       }
       .device {
-        width: min(760px, 100%);
-        border-radius: 34px 34px 28px 28px;
-        padding: 18px 18px 22px;
+        width: min(706px, 100%);
+        border-radius: 34px 34px 24px 24px;
+        padding: 18px 16px 22px;
         background:
           linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 9%),
           linear-gradient(180deg, var(--shell-edge), var(--shell) 12%, var(--shell-dark));
@@ -55,12 +55,22 @@
           inset 0 1px 0 rgba(255, 255, 255, 0.18),
           0 28px 50px rgba(13, 18, 24, 0.42);
       }
+      .device::after {
+        content: "";
+        display: block;
+        width: 110px;
+        height: 6px;
+        margin: 16px auto 0;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.28);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
       .brand-row {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         gap: 16px;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
       }
       .brand-cluster {
         display: grid;
@@ -73,58 +83,83 @@
         color: #d3d9e5;
       }
       .model-mark {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 700;
-        letter-spacing: 0.2px;
+        letter-spacing: 0.1px;
       }
       .model-mark small {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         opacity: 0.88;
         margin-left: 6px;
-        letter-spacing: 0.8px;
+        letter-spacing: 1px;
         text-transform: uppercase;
       }
       .meta-chip {
-        padding: 6px 10px;
+        padding: 5px 10px;
         border-radius: 999px;
         background: rgba(73, 83, 104, 0.9);
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 0.8px;
+      }
+      .function-bar {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .top-case-strip {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 2px 2px 10px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        font-size: 10px;
+        letter-spacing: 0.9px;
+        text-transform: uppercase;
+        color: #d7dce5;
+      }
+      .top-case-strip strong {
+        color: #f3c458;
+      }
+      .screen-bezel {
+        padding: 10px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #525a66, #2f3640);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.16),
+          inset 0 -8px 14px rgba(0, 0, 0, 0.24);
       }
       .screen-shell {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 176px;
-        gap: 10px;
+        grid-template-columns: minmax(0, 1fr) 150px;
+        gap: 8px;
       }
       .screen-panel,
       .side-panel {
-        border-radius: 14px;
-        padding: 12px;
+        border-radius: 10px;
+        padding: 10px;
         background:
           linear-gradient(180deg, rgba(241, 250, 222, 0.15), transparent 14%),
           linear-gradient(180deg, var(--screen), var(--screen-dark));
-        border: 3px solid #586c43;
+        border: 2px solid #586c43;
         box-shadow:
           inset 0 1px 0 rgba(255, 255, 255, 0.18),
           inset 0 -10px 18px rgba(79, 101, 52, 0.16);
       }
       .screen-panel {
-        min-height: 386px;
+        min-height: 356px;
       }
       .side-panel {
         border-left-width: 1px;
-        padding: 10px;
-        gap: 8px;
+        padding: 8px;
+        gap: 6px;
         background:
           linear-gradient(180deg, rgba(241, 250, 222, 0.1), transparent 16%),
           linear-gradient(180deg, #9fb776, #88a362);
-      }
-      .view-tabs {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px;
-        margin-bottom: 10px;
       }
       .tab-btn,
       .panel-btn,
@@ -139,25 +174,49 @@
       .tab-btn,
       .panel-btn {
         cursor: pointer;
-        padding: 7px 8px;
+        padding: 7px 6px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.7px;
       }
       .tab-btn.active,
       .panel-btn.active {
         background: var(--btn-active);
       }
       .tab-btn {
-        background: #35568d;
+        background: linear-gradient(180deg, #4b73ad, #2d4f83);
         color: #f3f7ff;
         border-color: #203b67;
-        border-radius: 8px;
+        border-radius: 10px;
+        min-height: 40px;
+        line-height: 1.05;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
       .tab-btn.active {
         background: #f0c145;
         color: #25303d;
         border-color: #bc9235;
+      }
+      .tab-btn span {
+        display: block;
+        font-size: 10px;
+        opacity: 0.92;
+        letter-spacing: 1px;
+      }
+      .screen-status {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 8px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid rgba(34, 49, 24, 0.25);
+        font-size: 10px;
+        color: rgba(34, 49, 24, 0.82);
+        text-transform: uppercase;
+        letter-spacing: 0.85px;
+      }
+      .screen-status span:last-child {
+        text-align: right;
       }
       .view {
         display: none;
@@ -182,13 +241,13 @@
       .expression-input,
       .function-input {
         width: 100%;
-        padding: 8px 10px;
+        padding: 7px 9px;
         font-weight: 600;
         border-radius: 7px;
       }
       .expression-input {
         margin-bottom: 10px;
-        min-height: 42px;
+        min-height: 38px;
       }
       .function-list {
         display: grid;
@@ -197,9 +256,9 @@
       .function-row {
         display: grid;
         grid-template-columns: 24px 18px 48px minmax(0, 1fr);
-        gap: 8px;
+        gap: 6px;
         align-items: center;
-        padding: 8px;
+        padding: 7px;
         border-radius: 8px;
         background: rgba(223, 237, 194, 0.82);
         border: 1px solid #6f8557;
@@ -226,18 +285,18 @@
         letter-spacing: 0.2px;
       }
       .readout {
-        margin-top: 12px;
+        margin-top: 10px;
         display: grid;
         grid-template-columns: 3fr 2fr;
-        gap: 8px;
+        gap: 6px;
       }
       .readout-block,
       .side-card {
         background: rgba(226, 240, 201, 0.86);
-        border-radius: 8px;
+        border-radius: 6px;
         color: var(--screen-ink);
         border: 1px solid #667c52;
-        padding: 8px;
+        padding: 7px;
       }
       .label {
         font-size: 10px;
@@ -246,16 +305,16 @@
         opacity: 0.8;
       }
       .value {
-        font-size: 17px;
+        font-size: 15px;
         font-weight: 700;
-        min-height: 22px;
+        min-height: 20px;
         word-break: break-word;
       }
       canvas {
         width: 100%;
-        height: 246px;
+        height: 214px;
         background: rgba(213, 230, 177, 0.94);
-        border-radius: 8px;
+        border-radius: 6px;
         border: 1px solid #627a4a;
       }
       .graph-legend,
@@ -276,9 +335,9 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 10px;
-        border-radius: 7px;
-        padding: 8px;
+        gap: 8px;
+        border-radius: 6px;
+        padding: 6px;
         background: rgba(224, 238, 198, 0.88);
         color: var(--screen-ink);
       }
@@ -309,6 +368,34 @@
         gap: 8px;
         align-content: start;
       }
+      .memory-controls,
+      .bank-picker {
+        display: grid;
+        gap: 5px;
+      }
+      .memory-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 6px;
+      }
+      .bank-picker {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 6px;
+      }
+      .micro-btn {
+        border: 1px solid #667c52;
+        border-radius: 6px;
+        background: rgba(214, 228, 188, 0.96);
+        color: var(--screen-ink);
+        padding: 5px 4px;
+        font-size: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .micro-btn.active {
+        box-shadow: inset 0 0 0 1px #355629;
+      }
       .bank-list {
         display: grid;
         gap: 6px;
@@ -318,26 +405,36 @@
       }
       .keypad {
         margin-top: 16px;
-        padding: 12px 8px 2px;
-        border-radius: 20px;
+        padding: 10px 8px 2px;
+        border-radius: 18px;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.12));
       }
-      .memory-row,
+      .utility-strip,
+      .keypad-grid,
       .grid {
         display: grid;
         gap: 7px;
       }
-      .memory-row {
-        grid-template-columns: repeat(8, minmax(0, 1fr));
+      .utility-strip {
+        grid-template-columns: repeat(11, minmax(0, 1fr));
         margin-bottom: 9px;
       }
+      .utility-strip .k-btn {
+        min-height: 34px;
+        font-size: 10px;
+        border-radius: 9px;
+      }
+      .keypad-grid {
+        grid-template-columns: 1.15fr 1fr;
+        align-items: start;
+      }
       .grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
       }
       .k-btn {
         border: 1px solid rgba(10, 13, 16, 0.72);
         border-radius: 10px;
-        padding: 10px 7px;
+        padding: 11px 6px;
         font-size: 13px;
         font-weight: 700;
         color: var(--txt);
@@ -345,6 +442,56 @@
         cursor: pointer;
         transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      }
+      .k-btn.utility {
+        background: linear-gradient(180deg, #5f85bf, #365989);
+      }
+      .k-btn.system {
+        background: linear-gradient(180deg, #949cab, #6d7481);
+        color: #1a1f28;
+      }
+      .k-btn.navy {
+        background: linear-gradient(180deg, #4e5f7e, #334259);
+      }
+      .k-btn.black {
+        background: linear-gradient(180deg, #4f5661, #272d35);
+      }
+      .k-btn.orange {
+        background: linear-gradient(180deg, #cf8245, #9a4f18);
+      }
+      .k-btn.enter {
+        min-height: 88px;
+        grid-row: span 2;
+      }
+      .k-btn .key-sub,
+      .k-btn .key-alpha,
+      .k-btn .key-main {
+        display: block;
+        line-height: 1.05;
+      }
+      .k-btn .key-sub {
+        font-size: 8px;
+        min-height: 9px;
+        color: #ffd15a;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+      .k-btn .key-alpha {
+        font-size: 8px;
+        min-height: 9px;
+        color: #8dd5ff;
+        letter-spacing: 0.6px;
+      }
+      .k-btn .key-main {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .k-btn.compact .key-main {
+        font-size: 11px;
+      }
+      .k-btn.func .key-sub,
+      .k-btn.system .key-sub {
+        color: #ffd15a;
       }
       .k-btn:hover,
       .tab-btn:hover,
@@ -401,10 +548,14 @@
           width: min(100%, 560px);
           border-radius: 26px;
         }
-        .view-tabs,
+        .function-bar,
         .toolbar,
         .home-actions,
         .window-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .utility-strip,
+        .keypad-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         .readout {
@@ -412,9 +563,6 @@
         }
         .side-panel {
           grid-template-columns: 1fr;
-        }
-        .memory-row {
-          grid-template-columns: repeat(4, minmax(0, 1fr));
         }
         .grid {
           grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -430,27 +578,41 @@
       <div class="brand-row">
         <div class="brand-cluster">
           <span class="brand-chip">Texas Instruments</span>
-          <div class="model-mark">TI-84 <small>inspired</small></div>
+          <div class="model-mark">TI-84 Plus <small>replica</small></div>
         </div>
         <span class="meta-chip" id="modeLabel">MODE: RAD</span>
       </div>
 
+      <div class="top-case-strip">
+        <span>Graphing Calculator</span>
+        <span><strong>2nd</strong> labels mimic device functions</span>
+      </div>
+
+      <div class="function-bar">
+        <button class="tab-btn" data-view="y-editor"><span>Stat Plot</span>Y=</button>
+        <button class="tab-btn" data-view="window"><span>TblSet</span>WINDOW</button>
+        <button class="tab-btn" data-view="graph"><span>Format</span>ZOOM</button>
+        <button class="tab-btn" data-view="graph"><span>Calc</span>TRACE</button>
+        <button class="tab-btn" data-view="graph"><span>Table</span>GRAPH</button>
+      </div>
+
+      <div class="screen-bezel">
       <section class="screen-shell">
         <div class="screen-panel">
-          <div class="view-tabs">
-            <button class="tab-btn active" data-view="home">HOME</button>
-            <button class="tab-btn" data-view="y-editor">Y=</button>
-            <button class="tab-btn" data-view="window">WINDOW</button>
-            <button class="tab-btn" data-view="graph">GRAPH</button>
+          <div class="screen-status">
+            <span>Normal</span>
+            <span>Float</span>
+            <span id="screenModeText">Rad</span>
+            <span id="screenFocusText">Y1</span>
           </div>
 
           <div class="view active" data-screen="home">
-            <div class="view-copy">Evaluate one-off expressions here, or promote them into Y slots for graphing.</div>
-            <input id="expressionInput" class="expression-input" placeholder="Enter expression, for example: sin(x) or (3+4)^2" />
+            <div class="view-copy">Home screen. Use QUIT to return here and ENTER to evaluate the current line.</div>
+            <input id="expressionInput" class="expression-input" placeholder="HOME expression, for example: sin(x) or (3+4)^2" />
             <div class="home-actions">
-              <button class="panel-btn" id="calcBtn">CALCULATE</button>
-              <button class="panel-btn" id="useAsY1Btn">SEND TO Y1</button>
-              <button class="panel-btn" id="homeGraphBtn">GRAPH ACTIVE</button>
+              <button class="panel-btn" id="calcBtn">ENTER</button>
+              <button class="panel-btn" id="useAsY1Btn">STO→Y1</button>
+              <button class="panel-btn" id="homeGraphBtn">GRAPH</button>
             </div>
           </div>
 
@@ -460,7 +622,7 @@
           </div>
 
           <div class="view" data-screen="window">
-            <div class="window-copy">Set the graphing window once and reuse it across plots.</div>
+            <div class="window-copy">Adjust the graph window like the TI-84 WINDOW screen.</div>
             <div class="window-grid">
               <input id="xMin" class="field" type="number" step="1" />
               <input id="xMax" class="field" type="number" step="1" />
@@ -502,6 +664,17 @@
           </div>
           <div class="side-card">
             <div class="label">Memory Banks</div>
+            <div class="memory-controls">
+              <button class="micro-btn" data-memory="MC">MC</button>
+              <button class="micro-btn" data-memory="MR">MR</button>
+              <button class="micro-btn" data-memory="M+">M+</button>
+              <button class="micro-btn" data-memory="M-">M-</button>
+            </div>
+            <div class="bank-picker">
+              <button class="micro-btn" data-bank="M1">M1</button>
+              <button class="micro-btn" data-bank="M2">M2</button>
+              <button class="micro-btn" data-bank="M3">M3</button>
+            </div>
             <ul class="bank-list" id="bankList"></ul>
           </div>
           <div class="side-card">
@@ -510,68 +683,87 @@
           </div>
         </aside>
       </section>
+      </div>
 
       <section class="keypad">
-        <div class="memory-row">
-          <button class="k-btn alt" data-memory="MC">MC</button>
-          <button class="k-btn alt" data-memory="MR">MR</button>
-          <button class="k-btn alt" data-memory="M+">M+</button>
-          <button class="k-btn alt" data-memory="M-">M-</button>
-          <button class="k-btn alt" data-bank="M1">M1</button>
-          <button class="k-btn alt" data-bank="M2">M2</button>
-          <button class="k-btn alt" data-bank="M3">M3</button>
-          <button class="k-btn alt" id="modeBtn">RAD/DEG</button>
+        <div class="utility-strip">
+          <button class="k-btn utility compact"><span class="key-sub">MEM CLR</span><span class="key-main">2nd</span><span class="key-alpha">Off</span></button>
+          <button class="k-btn utility compact" id="modeBtn"><span class="key-sub">Rad/Deg</span><span class="key-main">MODE</span><span class="key-alpha">Quit</span></button>
+          <button class="k-btn utility compact" data-action="delete"><span class="key-sub">Ins</span><span class="key-main">DEL</span><span class="key-alpha">Mem</span></button>
+          <button class="k-btn navy compact"><span class="key-sub">A-Lock</span><span class="key-main">ALPHA</span><span class="key-alpha">A</span></button>
+          <button class="k-btn navy compact" data-value="x"><span class="key-sub">Link</span><span class="key-main">X,T,θ,n</span><span class="key-alpha">X</span></button>
+          <button class="k-btn navy compact"><span class="key-sub">List</span><span class="key-main">STAT</span><span class="key-alpha">L</span></button>
+          <button class="k-btn navy compact" data-value="sqrt("><span class="key-sub">Test</span><span class="key-main">MATH</span><span class="key-alpha">M</span></button>
+          <button class="k-btn navy compact" data-value="abs("><span class="key-sub">Angle</span><span class="key-main">APPS</span><span class="key-alpha">A</span></button>
+          <button class="k-btn navy compact" data-value="factorial("><span class="key-sub">Draw</span><span class="key-main">PRGM</span><span class="key-alpha">P</span></button>
+          <button class="k-btn navy compact" data-value="pi"><span class="key-sub">Distr</span><span class="key-main">VARS</span><span class="key-alpha">V</span></button>
+          <button class="k-btn system compact" data-action="clear"><span class="key-sub">ClrAll</span><span class="key-main">CLEAR</span><span class="key-alpha">"</span></button>
         </div>
 
-        <div class="grid">
-          <button class="k-btn func" data-value="sin(">sin</button>
-          <button class="k-btn func" data-value="cos(">cos</button>
-          <button class="k-btn func" data-value="tan(">tan</button>
-          <button class="k-btn func" data-value="asin(">asin</button>
-          <button class="k-btn func" data-value="acos(">acos</button>
-          <button class="k-btn func" data-value="atan(">atan</button>
+        <div class="keypad-grid">
+          <div class="grid">
+            <button class="k-btn func"><span class="key-sub">Matrix</span><span class="key-main">x⁻¹</span><span class="key-alpha">D</span></button>
+            <button class="k-btn func" data-value="sin("><span class="key-sub">sin⁻¹</span><span class="key-main">SIN</span><span class="key-alpha">E</span></button>
+            <button class="k-btn func" data-value="cos("><span class="key-sub">cos⁻¹</span><span class="key-main">COS</span><span class="key-alpha">F</span></button>
+            <button class="k-btn func" data-value="tan("><span class="key-sub">tan⁻¹</span><span class="key-main">TAN</span><span class="key-alpha">G</span></button>
+            <button class="k-btn black" data-value="^"><span class="key-sub">π</span><span class="key-main">^</span><span class="key-alpha">H</span></button>
 
-          <button class="k-btn func" data-value="log(">log</button>
-          <button class="k-btn func" data-value="ln(">ln</button>
-          <button class="k-btn func" data-value="pow10(">10^x</button>
-          <button class="k-btn func" data-value="exp(">e^x</button>
-          <button class="k-btn func" data-value="inv(">1/x</button>
-          <button class="k-btn func" data-value="sqrt(">sqrt</button>
+            <button class="k-btn func" data-value="^2"><span class="key-sub">√</span><span class="key-main">x²</span><span class="key-alpha">I</span></button>
+            <button class="k-btn func" data-value="log("><span class="key-sub">10ˣ</span><span class="key-main">LOG</span><span class="key-alpha">J</span></button>
+            <button class="k-btn func" data-value="ln("><span class="key-sub">eˣ</span><span class="key-main">LN</span><span class="key-alpha">K</span></button>
+            <button class="k-btn black" data-value="("><span class="key-sub">{</span><span class="key-main">(</span><span class="key-alpha">L</span></button>
+            <button class="k-btn black" data-value=")"><span class="key-sub">}</span><span class="key-main">)</span><span class="key-alpha">M</span></button>
 
-          <button class="k-btn alt" data-action="clear">AC</button>
-          <button class="k-btn alt" data-action="delete">DEL</button>
-          <button class="k-btn alt" data-value="(">(</button>
-          <button class="k-btn alt" data-value=")">)</button>
-          <button class="k-btn alt" data-value="pi">pi</button>
-          <button class="k-btn alt" data-value="e">e</button>
+            <button class="k-btn black" id="storeY1KeyBtn"><span class="key-sub">Plot1</span><span class="key-main">STO→</span><span class="key-alpha">N</span></button>
+            <button class="k-btn" data-value="7"><span class="key-sub">u</span><span class="key-main">7</span><span class="key-alpha">O</span></button>
+            <button class="k-btn" data-value="8"><span class="key-sub">v</span><span class="key-main">8</span><span class="key-alpha">P</span></button>
+            <button class="k-btn" data-value="9"><span class="key-sub">w</span><span class="key-main">9</span><span class="key-alpha">Q</span></button>
+            <button class="k-btn orange" data-value="/"><span class="key-sub">Matrx</span><span class="key-main">÷</span><span class="key-alpha">R</span></button>
 
-          <button class="k-btn" data-value="7">7</button>
-          <button class="k-btn" data-value="8">8</button>
-          <button class="k-btn" data-value="9">9</button>
-          <button class="k-btn accent" data-value="/">/</button>
-          <button class="k-btn accent" data-value="*">*</button>
-          <button class="k-btn func" data-value="factorial(">x!</button>
+            <button class="k-btn black" id="quitBtn"><span class="key-sub">Quit</span><span class="key-main">MODE</span><span class="key-alpha">S</span></button>
+            <button class="k-btn" data-value="4"><span class="key-sub">p</span><span class="key-main">4</span><span class="key-alpha">T</span></button>
+            <button class="k-btn" data-value="5"><span class="key-sub">q</span><span class="key-main">5</span><span class="key-alpha">U</span></button>
+            <button class="k-btn" data-value="6"><span class="key-sub">r</span><span class="key-main">6</span><span class="key-alpha">V</span></button>
+            <button class="k-btn orange" data-value="*"><span class="key-sub">List</span><span class="key-main">×</span><span class="key-alpha">W</span></button>
 
-          <button class="k-btn" data-value="4">4</button>
-          <button class="k-btn" data-value="5">5</button>
-          <button class="k-btn" data-value="6">6</button>
-          <button class="k-btn accent" data-value="-">-</button>
-          <button class="k-btn accent" data-value="+">+</button>
-          <button class="k-btn accent" data-value="^">^</button>
+            <button class="k-btn black" id="graphKeyBtn"><span class="key-sub">Table</span><span class="key-main">GRAPH</span><span class="key-alpha">X</span></button>
+            <button class="k-btn" data-value="1"><span class="key-sub">m</span><span class="key-main">1</span><span class="key-alpha">Y</span></button>
+            <button class="k-btn" data-value="2"><span class="key-sub">n</span><span class="key-main">2</span><span class="key-alpha">Z</span></button>
+            <button class="k-btn" data-value="3"><span class="key-sub">o</span><span class="key-main">3</span><span class="key-alpha">θ</span></button>
+            <button class="k-btn orange" data-value="-"><span class="key-sub">Test</span><span class="key-main">-</span><span class="key-alpha">"</span></button>
 
-          <button class="k-btn" data-value="1">1</button>
-          <button class="k-btn" data-value="2">2</button>
-          <button class="k-btn" data-value="3">3</button>
-          <button class="k-btn" data-value="x">x</button>
-          <button class="k-btn" data-value=".">.</button>
-          <button class="k-btn accent" id="equalsBtn">ENTER</button>
+            <button class="k-btn black" id="traceKeyBtn"><span class="key-sub">Calc</span><span class="key-main">TRACE</span><span class="key-alpha">Ans</span></button>
+            <button class="k-btn" data-value="0"><span class="key-sub">0</span><span class="key-main">0</span><span class="key-alpha">Space</span></button>
+            <button class="k-btn" data-value="."><span class="key-sub">:</span><span class="key-main">.</span><span class="key-alpha">:</span></button>
+            <button class="k-btn black" data-value=","><span class="key-sub">EE</span><span class="key-main">(-)</span><span class="key-alpha">?</span></button>
+            <button class="k-btn orange" data-value="+"><span class="key-sub">Mem</span><span class="key-main">+</span><span class="key-alpha">"</span></button>
+          </div>
 
-          <button class="k-btn" data-value="0">0</button>
-          <button class="k-btn alt" data-value=",">,</button>
-          <button class="k-btn alt" data-value="^2">x^2</button>
-          <button class="k-btn alt" data-value="abs(">abs</button>
-          <button class="k-btn alt" data-value="floor(">floor</button>
-          <button class="k-btn alt" data-value="ceil(">ceil</button>
+          <div class="grid">
+            <button class="k-btn black" data-view="y-editor"><span class="key-sub">Stat Plot</span><span class="key-main">Y=</span><span class="key-alpha">1</span></button>
+            <button class="k-btn black" data-view="window"><span class="key-sub">TblSet</span><span class="key-main">WINDOW</span><span class="key-alpha">2</span></button>
+            <button class="k-btn black" data-view="graph"><span class="key-sub">Format</span><span class="key-main">ZOOM</span><span class="key-alpha">3</span></button>
+            <button class="k-btn black" data-view="graph"><span class="key-sub">Table</span><span class="key-main">GRAPH</span><span class="key-alpha">4</span></button>
+            <button class="k-btn black" id="quitKeyBtn"><span class="key-sub">Home</span><span class="key-main">QUIT</span><span class="key-alpha">5</span></button>
+
+            <button class="k-btn system" data-value="pi"><span class="key-sub">Angle</span><span class="key-main">π</span><span class="key-alpha">A</span></button>
+            <button class="k-btn system" data-value="e"><span class="key-sub">e</span><span class="key-main">e</span><span class="key-alpha">B</span></button>
+            <button class="k-btn system" data-value="abs("><span class="key-sub">Num</span><span class="key-main">ABS</span><span class="key-alpha">C</span></button>
+            <button class="k-btn system" data-value="floor("><span class="key-sub">iPart</span><span class="key-main">FLOOR</span><span class="key-alpha">D</span></button>
+            <button class="k-btn system" data-value="ceil("><span class="key-sub">fPart</span><span class="key-main">CEIL</span><span class="key-alpha">E</span></button>
+
+            <button class="k-btn system" data-value="asin("><span class="key-sub">sin⁻¹</span><span class="key-main">ASIN</span><span class="key-alpha">F</span></button>
+            <button class="k-btn system" data-value="acos("><span class="key-sub">cos⁻¹</span><span class="key-main">ACOS</span><span class="key-alpha">G</span></button>
+            <button class="k-btn system" data-value="atan("><span class="key-sub">tan⁻¹</span><span class="key-main">ATAN</span><span class="key-alpha">H</span></button>
+            <button class="k-btn system" data-value="pow10("><span class="key-sub">10ˣ</span><span class="key-main">10ˣ</span><span class="key-alpha">I</span></button>
+            <button class="k-btn system" data-value="exp("><span class="key-sub">eˣ</span><span class="key-main">eˣ</span><span class="key-alpha">J</span></button>
+
+            <button class="k-btn system enter" id="equalsBtn"><span class="key-sub">Entry</span><span class="key-main">ENTER</span><span class="key-alpha">K</span></button>
+            <button class="k-btn system" id="saveWindowKeyBtn"><span class="key-sub">Store</span><span class="key-main">SAVE</span><span class="key-alpha">L</span></button>
+            <button class="k-btn system" id="zoomStdKeyBtn"><span class="key-sub">ZStandard</span><span class="key-main">ZOOM</span><span class="key-alpha">M</span></button>
+            <button class="k-btn system" id="drawKeyBtn"><span class="key-sub">Plot</span><span class="key-main">DRAW</span><span class="key-alpha">N</span></button>
+            <button class="k-btn system" data-value="factorial("><span class="key-sub">n!</span><span class="key-main">FACT</span><span class="key-alpha">O</span></button>
+          </div>
         </div>
       </section>
 
@@ -596,6 +788,8 @@
       const graphLegend = document.getElementById("graphLegend");
       const focusValue = document.getElementById("focusValue");
       const windowValue = document.getElementById("windowValue");
+      const screenModeText = document.getElementById("screenModeText");
+      const screenFocusText = document.getElementById("screenFocusText");
       const functionList = document.getElementById("functionList");
       const bankList = document.getElementById("bankList");
       const ctx = graphCanvas.getContext("2d");
@@ -642,6 +836,8 @@
         focusValue.textContent = `${state.currentView.toUpperCase()} · ${state.activeSlot}`;
         windowValue.textContent = `x:[${state.graphWindow.x_min}, ${state.graphWindow.x_max}] • n:${state.graphWindow.samples}`;
         modeLabel.textContent = `MODE: ${state.mode.toUpperCase()}`;
+        screenModeText.textContent = state.mode === "rad" ? "Radian" : "Degree";
+        screenFocusText.textContent = state.currentView === "y-editor" ? state.activeSlot : state.currentView.toUpperCase();
       }
 
       function currentInput() {
@@ -1061,10 +1257,20 @@
       document.getElementById("calcBtn").addEventListener("click", handleCalculate);
       document.getElementById("equalsBtn").addEventListener("click", handleCalculate);
       document.getElementById("graphBtn").addEventListener("click", handleGraph);
+      document.getElementById("graphKeyBtn").addEventListener("click", handleGraph);
       document.getElementById("homeGraphBtn").addEventListener("click", handleGraph);
+      document.getElementById("drawKeyBtn").addEventListener("click", handleGraph);
       document.getElementById("graphFromWindowBtn").addEventListener("click", handleGraph);
+      document.getElementById("traceKeyBtn").addEventListener("click", handleGraph);
       document.getElementById("traceHomeBtn").addEventListener("click", () => switchView("home"));
+      document.getElementById("quitBtn").addEventListener("click", () => switchView("home"));
+      document.getElementById("quitKeyBtn").addEventListener("click", () => switchView("home"));
       document.getElementById("useAsY1Btn").addEventListener("click", () => {
+        if (promoteHomeExpressionToY1()) {
+          switchView("y-editor");
+        }
+      });
+      document.getElementById("storeY1KeyBtn").addEventListener("click", () => {
         if (promoteHomeExpressionToY1()) {
           switchView("y-editor");
         }
@@ -1079,7 +1285,25 @@
           updateStatus(error.message);
         }
       });
+      document.getElementById("saveWindowKeyBtn").addEventListener("click", async () => {
+        try {
+          syncWindowInputsToState();
+          await saveState();
+          updateStatus("Window saved");
+        } catch (error) {
+          updateStatus(error.message);
+        }
+      });
       document.getElementById("zoomStdBtn").addEventListener("click", () => {
+        state.graphWindow = { x_min: -10, x_max: 10, samples: 300 };
+        xMinInput.value = state.graphWindow.x_min;
+        xMaxInput.value = state.graphWindow.x_max;
+        samplesInput.value = state.graphWindow.samples;
+        scheduleStateSave();
+        updateReadout();
+        updateStatus("Standard window restored");
+      });
+      document.getElementById("zoomStdKeyBtn").addEventListener("click", () => {
         state.graphWindow = { x_min: -10, x_max: 10, samples: 300 };
         xMinInput.value = state.graphWindow.x_min;
         xMaxInput.value = state.graphWindow.x_max;
@@ -1098,7 +1322,7 @@
         }
       });
 
-      document.querySelectorAll(".tab-btn").forEach((button) => {
+      document.querySelectorAll("[data-view]").forEach((button) => {
         button.addEventListener("click", () => switchView(button.dataset.view));
       });
 
