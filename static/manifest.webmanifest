@@ -1,0 +1,24 @@
+{
+  "name": "TI-84 Graphing Calculator",
+  "short_name": "TI-84 Calc",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#171c22",
+  "theme_color": "#2d3440",
+  "description": "TI-84 Plus style graphing calculator web app",
+  "icons": [
+    {
+      "src": "/static/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -138,7 +138,11 @@ Returns current memory bank values.
 
 **Response:**
 ```json
-{ "banks": { "M1": 0.0, "M2": 0.0, "M3": 0.0 }, "persistence": "process-scoped" }
+{
+  "banks": { "M1": 0.0, "M2": 0.0, "M3": 0.0 },
+  "active_bank": "M1",
+  "persistence": "Memory and calculator state are saved on disk"
+}
 ```
 
 ---
@@ -156,7 +160,12 @@ Operations: `M+` (add to bank), `M-` (subtract from bank), `MR` (read bank), `MC
 
 **Response:**
 ```json
-{ "bank": "M1", "value": 42.0, "banks": { "M1": 42.0, "M2": 0.0, "M3": 0.0 }, "persistence": "process-scoped" }
+{
+  "bank": "M1",
+  "value": 42.0,
+  "banks": { "M1": 42.0, "M2": 0.0, "M3": 0.0 },
+  "persistence": "Memory and calculator state are saved on disk"
+}
 ```
 
 ---
