@@ -523,6 +523,11 @@ def read_root():
     return FileResponse("static/index.html")
 
 
+@app.get("/sw.js")
+def service_worker():
+    return FileResponse("static/sw.js", media_type="application/javascript")
+
+
 @app.get("/api/state")
 def get_state():
     return _state_payload()

@@ -3,6 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2d3440" />
+    <meta name="description" content="TI-84 Plus style graphing calculator" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="/static/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/static/icon.svg" />
     <title>Graphing Calculator</title>
     <style>
       :root {
@@ -123,6 +129,22 @@
       }
       .top-case-strip strong {
         color: #f3c458;
+      }
+      .install-btn {
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        border-radius: 999px;
+        background: linear-gradient(180deg, #f3c458, #d0a93d);
+        color: #1f2732;
+        padding: 4px 10px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        cursor: pointer;
+        display: none;
+      }
+      .install-btn.visible {
+        display: inline-block;
       }
       .screen-bezel {
         padding: 10px;
@@ -544,31 +566,89 @@
         }
       }
       @media (max-width: 720px) {
+        body {
+          padding: 12px;
+        }
         .device {
           width: min(100%, 560px);
-          border-radius: 26px;
+          border-radius: 24px;
+          padding: 12px 10px 16px;
         }
-        .function-bar,
+        .top-case-strip {
+          gap: 8px;
+          font-size: 9px;
+          padding: 3px 6px;
+        }
+        .function-bar {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 4px;
+        }
+        .tab-btn {
+          min-height: 34px;
+          font-size: 9px;
+        }
+        .screen-shell,
+        .keypad-grid {
+          grid-template-columns: 1fr;
+        }
+        .utility-strip {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
         .toolbar,
         .home-actions,
         .window-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-        .utility-strip,
-        .keypad-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        .readout {
-          grid-template-columns: 1fr;
-        }
+        .readout,
         .side-panel {
           grid-template-columns: 1fr;
         }
         .grid {
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          gap: 5px;
         }
         .function-row {
           grid-template-columns: 24px 18px 38px minmax(0, 1fr);
+        }
+        .k-btn {
+          padding: 8px 4px;
+          font-size: 11px;
+        }
+        .k-btn.enter {
+          min-height: 72px;
+        }
+      }
+      @media (max-width: 480px) {
+        body {
+          padding: 8px;
+        }
+        .brand-row {
+          align-items: center;
+          gap: 8px;
+        }
+        .model-mark {
+          font-size: 18px;
+        }
+        .meta-chip {
+          font-size: 9px;
+        }
+        .top-case-strip {
+          flex-wrap: wrap;
+        }
+        .top-case-strip span:first-child {
+          display: none;
+        }
+        canvas {
+          height: 150px;
+        }
+        .utility-strip {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .k-btn .key-main {
+          font-size: 10px;
         }
       }
     </style>
@@ -586,6 +666,7 @@
       <div class="top-case-strip">
         <span>Graphing Calculator</span>
         <span><strong>2nd</strong> labels mimic device functions</span>
+        <button id="installAppBtn" class="install-btn" type="button">Install App</button>
       </div>
 
       <div class="function-bar">
@@ -793,6 +874,8 @@
       const functionList = document.getElementById("functionList");
       const bankList = document.getElementById("bankList");
       const ctx = graphCanvas.getContext("2d");
+      const installAppBtn = document.getElementById("installAppBtn");
+      let deferredInstallPrompt = null;
 
       const state = {
         mode: "rad",
@@ -1420,6 +1503,35 @@
           switchView("y-editor");
         }
       });
+
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        deferredInstallPrompt = event;
+        installAppBtn?.classList.add("visible");
+      });
+
+      installAppBtn?.addEventListener("click", async () => {
+        if (!deferredInstallPrompt) {
+          return;
+        }
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        installAppBtn.classList.remove("visible");
+      });
+
+      window.addEventListener("appinstalled", () => {
+        installAppBtn?.classList.remove("visible");
+        updateStatus("Installed as app");
+      });
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch((error) => {
+            console.error("Service worker registration failed", error);
+          });
+        });
+      }
 
       clearGraph("Ready");
       state.graphFunctions = defaultGraphFunctions();
