@@ -6,16 +6,23 @@
     <title>Graphing Calculator</title>
     <style>
       :root {
-        --shell: #242b3a;
-        --shell-dark: #1a2030;
-        --screen: #b5d3a0;
-        --screen-dark: #8eb177;
-        --btn: #4b556a;
-        --btn-alt: #616f88;
-        --btn-func: #7b4f43;
-        --btn-accent: #2a78a9;
-        --txt: #eef2ff;
-        --txt-dark: #0f172a;
+        --shell: #2d3440;
+        --shell-dark: #171c22;
+        --shell-edge: #59616f;
+        --screen: #b8cf90;
+        --screen-dark: #98b56a;
+        --screen-ink: #223118;
+        --panel: rgba(210, 228, 183, 0.78);
+        --panel-strong: rgba(230, 243, 211, 0.9);
+        --btn: #616974;
+        --btn-alt: #304c7f;
+        --btn-func: #8790a1;
+        --btn-accent: #a15a18;
+        --btn-active: #dce8bf;
+        --txt: #eef4ff;
+        --txt-dark: #142110;
+        --grid: rgba(61, 84, 44, 0.18);
+        --axis: rgba(34, 49, 24, 0.8);
       }
       * {
         box-sizing: border-box;
@@ -25,155 +32,385 @@
         min-height: 100vh;
         display: grid;
         place-items: center;
-        padding: 20px;
+        padding: 24px;
         color: var(--txt);
         font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        background: radial-gradient(circle at 20% 20%, #233550, #111827 64%);
+        background:
+          radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.42), transparent 22%),
+          linear-gradient(180deg, #d7dde5, #c7ced8 36%, #afb8c4 100%);
+      }
+      button,
+      input {
+        font: inherit;
       }
       .device {
-        width: min(820px, 100%);
-        border-radius: 26px;
-        padding: 18px;
-        background: linear-gradient(180deg, var(--shell), var(--shell-dark));
-        border: 2px solid #101827;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+        width: min(760px, 100%);
+        border-radius: 34px 34px 28px 28px;
+        padding: 18px 18px 22px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 9%),
+          linear-gradient(180deg, var(--shell-edge), var(--shell) 12%, var(--shell-dark));
+        border: 2px solid #10151b;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.18),
+          0 28px 50px rgba(13, 18, 24, 0.42);
       }
       .brand-row {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        font-size: 13px;
-        letter-spacing: 0.4px;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+      .brand-cluster {
+        display: grid;
+        gap: 2px;
       }
       .brand-chip {
-        background: #3f4658;
-        border-radius: 12px;
-        padding: 4px 10px;
+        font-size: 11px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: #d3d9e5;
+      }
+      .model-mark {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+      .model-mark small {
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0.88;
+        margin-left: 6px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+      .meta-chip {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(73, 83, 104, 0.9);
+        font-size: 12px;
+        letter-spacing: 0.8px;
+      }
+      .screen-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 176px;
+        gap: 10px;
+      }
+      .screen-panel,
+      .side-panel {
+        border-radius: 14px;
+        padding: 12px;
+        background:
+          linear-gradient(180deg, rgba(241, 250, 222, 0.15), transparent 14%),
+          linear-gradient(180deg, var(--screen), var(--screen-dark));
+        border: 3px solid #586c43;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.18),
+          inset 0 -10px 18px rgba(79, 101, 52, 0.16);
       }
       .screen-panel {
-        border-radius: 16px;
-        padding: 12px;
-        background: linear-gradient(180deg, var(--screen), var(--screen-dark));
-        border: 2px solid #5f7e4e;
+        min-height: 386px;
       }
-      .screen-toolbar {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+      .side-panel {
+        border-left-width: 1px;
+        padding: 10px;
         gap: 8px;
+        background:
+          linear-gradient(180deg, rgba(241, 250, 222, 0.1), transparent 16%),
+          linear-gradient(180deg, #9fb776, #88a362);
+      }
+      .view-tabs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
         margin-bottom: 10px;
       }
-      .screen-toolbar input,
-      .screen-toolbar button,
-      .expression-input {
-        width: 100%;
-        border: 1px solid #5c7950;
-        background: rgba(233, 248, 218, 0.85);
-        color: var(--txt-dark);
-        border-radius: 8px;
-        padding: 7px 8px;
-        font-weight: 600;
+      .tab-btn,
+      .panel-btn,
+      .field,
+      .expression-input,
+      .function-input {
+        border: 1px solid #657d4d;
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--screen-ink);
       }
-      .screen-toolbar button {
+      .tab-btn,
+      .panel-btn {
         cursor: pointer;
+        padding: 7px 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
-      canvas {
+      .tab-btn.active,
+      .panel-btn.active {
+        background: var(--btn-active);
+      }
+      .tab-btn {
+        background: #35568d;
+        color: #f3f7ff;
+        border-color: #203b67;
+        border-radius: 8px;
+      }
+      .tab-btn.active {
+        background: #f0c145;
+        color: #25303d;
+        border-color: #bc9235;
+      }
+      .view {
+        display: none;
+      }
+      .view.active {
+        display: block;
+      }
+      .toolbar,
+      .window-grid,
+      .home-actions {
+        display: grid;
+        gap: 8px;
+      }
+      .toolbar,
+      .home-actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .window-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .field,
+      .expression-input,
+      .function-input {
         width: 100%;
-        height: 230px;
-        background: rgba(230, 246, 213, 0.88);
-        border-radius: 10px;
-        border: 1px solid #5e7850;
+        padding: 8px 10px;
+        font-weight: 600;
+        border-radius: 7px;
+      }
+      .expression-input {
+        margin-bottom: 10px;
+        min-height: 42px;
+      }
+      .function-list {
+        display: grid;
+        gap: 8px;
+      }
+      .function-row {
+        display: grid;
+        grid-template-columns: 24px 18px 48px minmax(0, 1fr);
+        gap: 8px;
+        align-items: center;
+        padding: 8px;
+        border-radius: 8px;
+        background: rgba(223, 237, 194, 0.82);
+        border: 1px solid #6f8557;
+      }
+      .function-row.active {
+        background: var(--panel-strong);
+        box-shadow: inset 0 0 0 1px #496137;
+      }
+      .swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(16, 33, 23, 0.28);
+      }
+      .slot-label {
+        font-weight: 700;
+        color: #16311a;
+      }
+      .view-copy,
+      .window-copy {
+        color: rgba(20, 33, 16, 0.8);
+        font-size: 12px;
+        margin-bottom: 10px;
+        letter-spacing: 0.2px;
       }
       .readout {
-        margin-top: 10px;
+        margin-top: 12px;
         display: grid;
         grid-template-columns: 3fr 2fr;
         gap: 8px;
       }
-      .readout-block {
-        background: rgba(238, 250, 225, 0.92);
+      .readout-block,
+      .side-card {
+        background: rgba(226, 240, 201, 0.86);
         border-radius: 8px;
-        color: var(--txt-dark);
-        border: 1px solid #5b7650;
+        color: var(--screen-ink);
+        border: 1px solid #667c52;
         padding: 8px;
       }
       .label {
-        font-size: 11px;
+        font-size: 10px;
         text-transform: uppercase;
-        opacity: 0.75;
+        letter-spacing: 0.9px;
+        opacity: 0.8;
       }
       .value {
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 700;
         min-height: 22px;
-        word-break: break-all;
+        word-break: break-word;
+      }
+      canvas {
+        width: 100%;
+        height: 246px;
+        background: rgba(213, 230, 177, 0.94);
+        border-radius: 8px;
+        border: 1px solid #627a4a;
+      }
+      .graph-legend,
+      .bank-list,
+      .history ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .graph-legend {
+        display: grid;
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .legend-item,
+      .bank-item,
+      .history li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border-radius: 7px;
+        padding: 8px;
+        background: rgba(224, 238, 198, 0.88);
+        color: var(--screen-ink);
+      }
+      .legend-meta,
+      .history-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+      .history-button {
+        width: 100%;
+        background: transparent;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        text-align: left;
+      }
+      .legend-text,
+      .history-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .side-panel {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+      }
+      .bank-list {
+        display: grid;
+        gap: 6px;
+      }
+      .bank-item.active {
+        box-shadow: inset 0 0 0 1px #335629;
       }
       .keypad {
-        margin-top: 14px;
+        margin-top: 16px;
+        padding: 12px 8px 2px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.12));
       }
       .memory-row,
       .grid {
         display: grid;
-        gap: 8px;
+        gap: 7px;
       }
       .memory-row {
         grid-template-columns: repeat(8, minmax(0, 1fr));
-        margin-bottom: 8px;
+        margin-bottom: 9px;
       }
       .grid {
         grid-template-columns: repeat(6, minmax(0, 1fr));
       }
       .k-btn {
-        border: 0;
+        border: 1px solid rgba(10, 13, 16, 0.72);
         border-radius: 10px;
-        padding: 11px 8px;
-        font-size: 14px;
+        padding: 10px 7px;
+        font-size: 13px;
         font-weight: 700;
         color: var(--txt);
-        background: var(--btn);
+        background: linear-gradient(180deg, #7b828c, var(--btn));
         cursor: pointer;
+        transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      }
+      .k-btn:hover,
+      .tab-btn:hover,
+      .panel-btn:hover {
+        filter: brightness(1.05);
+      }
+      .k-btn:active,
+      .tab-btn:active,
+      .panel-btn:active {
+        transform: translateY(1px) scale(0.985);
       }
       .k-btn.alt {
-        background: var(--btn-alt);
+        background: linear-gradient(180deg, #46659f, var(--btn-alt));
       }
       .k-btn.func {
-        background: var(--btn-func);
+        background: linear-gradient(180deg, #9aa2b3, var(--btn-func));
+        color: #18212c;
       }
       .k-btn.accent {
-        background: var(--btn-accent);
+        background: linear-gradient(180deg, #ca7c34, var(--btn-accent));
+      }
+      .k-btn.active {
+        box-shadow: inset 0 0 0 2px rgba(242, 248, 255, 0.72);
       }
       .history {
         margin-top: 12px;
-        border-top: 1px solid #45506a;
-        padding-top: 10px;
+        border-top: 1px solid rgba(219, 228, 241, 0.14);
+        padding: 10px 4px 0;
+        color: #d7deea;
       }
       .history ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
         display: grid;
         gap: 6px;
-        max-height: 140px;
+        max-height: 120px;
         overflow: auto;
-      }
-      .history li {
-        display: flex;
-        justify-content: space-between;
-        background: #2b3449;
-        border-radius: 8px;
-        padding: 6px 8px;
-        font-size: 12px;
       }
       .status {
         margin-top: 8px;
         font-size: 12px;
-        opacity: 0.9;
+        opacity: 0.92;
+        text-align: center;
+        letter-spacing: 0.4px;
       }
-      @media (max-width: 700px) {
-        .screen-toolbar {
+      @media (max-width: 900px) {
+        .screen-shell {
+          grid-template-columns: 1fr;
+        }
+        .side-panel {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 720px) {
+        .device {
+          width: min(100%, 560px);
+          border-radius: 26px;
+        }
+        .view-tabs,
+        .toolbar,
+        .home-actions,
+        .window-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         .readout {
+          grid-template-columns: 1fr;
+        }
+        .side-panel {
           grid-template-columns: 1fr;
         }
         .memory-row {
@@ -182,36 +419,96 @@
         .grid {
           grid-template-columns: repeat(4, minmax(0, 1fr));
         }
+        .function-row {
+          grid-template-columns: 24px 18px 38px minmax(0, 1fr);
+        }
       }
     </style>
   </head>
   <body>
     <main class="device">
       <div class="brand-row">
-        <span class="brand-chip">GRAPHING CALCULATOR</span>
-        <span id="modeLabel">MODE: RAD</span>
+        <div class="brand-cluster">
+          <span class="brand-chip">Texas Instruments</span>
+          <div class="model-mark">TI-84 <small>inspired</small></div>
+        </div>
+        <span class="meta-chip" id="modeLabel">MODE: RAD</span>
       </div>
 
-      <section class="screen-panel">
-        <div class="screen-toolbar">
-          <input id="xMin" type="number" value="-10" step="1" />
-          <input id="xMax" type="number" value="10" step="1" />
-          <input id="samples" type="number" value="300" min="40" max="2000" step="10" />
-          <button id="graphBtn">GRAPH</button>
-          <button id="clearGraphBtn">CLEAR</button>
-        </div>
-        <input id="expressionInput" class="expression-input" placeholder="Enter expression for y = f(x), for example: sin(x)" />
-        <canvas id="graphCanvas" width="760" height="230"></canvas>
-        <div class="readout">
-          <div class="readout-block">
-            <div class="label">Expression</div>
-            <div class="value" id="expressionValue">0</div>
+      <section class="screen-shell">
+        <div class="screen-panel">
+          <div class="view-tabs">
+            <button class="tab-btn active" data-view="home">HOME</button>
+            <button class="tab-btn" data-view="y-editor">Y=</button>
+            <button class="tab-btn" data-view="window">WINDOW</button>
+            <button class="tab-btn" data-view="graph">GRAPH</button>
           </div>
-          <div class="readout-block">
-            <div class="label">Result / Memory</div>
-            <div class="value" id="resultValue">0</div>
+
+          <div class="view active" data-screen="home">
+            <div class="view-copy">Evaluate one-off expressions here, or promote them into Y slots for graphing.</div>
+            <input id="expressionInput" class="expression-input" placeholder="Enter expression, for example: sin(x) or (3+4)^2" />
+            <div class="home-actions">
+              <button class="panel-btn" id="calcBtn">CALCULATE</button>
+              <button class="panel-btn" id="useAsY1Btn">SEND TO Y1</button>
+              <button class="panel-btn" id="homeGraphBtn">GRAPH ACTIVE</button>
+            </div>
+          </div>
+
+          <div class="view" data-screen="y-editor">
+            <div class="view-copy">Pick which expressions live in Y1 through Y6. Enabled functions are graphed together.</div>
+            <div class="function-list" id="functionList"></div>
+          </div>
+
+          <div class="view" data-screen="window">
+            <div class="window-copy">Set the graphing window once and reuse it across plots.</div>
+            <div class="window-grid">
+              <input id="xMin" class="field" type="number" step="1" />
+              <input id="xMax" class="field" type="number" step="1" />
+              <input id="samples" class="field" type="number" min="40" max="2000" step="10" />
+            </div>
+            <div class="toolbar" style="margin-top: 10px;">
+              <button class="panel-btn" id="saveWindowBtn">SAVE WINDOW</button>
+              <button class="panel-btn" id="zoomStdBtn">ZOOM STD</button>
+              <button class="panel-btn" id="graphFromWindowBtn">GRAPH NOW</button>
+            </div>
+          </div>
+
+          <div class="view" data-screen="graph">
+            <div class="toolbar">
+              <button class="panel-btn" id="graphBtn">PLOT FUNCTIONS</button>
+              <button class="panel-btn" id="traceHomeBtn">HOME VIEW</button>
+              <button class="panel-btn" id="clearGraphBtn">CLEAR</button>
+            </div>
+            <canvas id="graphCanvas" width="760" height="290"></canvas>
+            <ul class="graph-legend" id="graphLegend"></ul>
+          </div>
+
+          <div class="readout">
+            <div class="readout-block">
+              <div class="label">Active Expression</div>
+              <div class="value" id="expressionValue">0</div>
+            </div>
+            <div class="readout-block">
+              <div class="label">Result / Memory</div>
+              <div class="value" id="resultValue">0</div>
+            </div>
           </div>
         </div>
+
+        <aside class="side-panel">
+          <div class="side-card">
+            <div class="label">Focus</div>
+            <div class="value" id="focusValue">HOME</div>
+          </div>
+          <div class="side-card">
+            <div class="label">Memory Banks</div>
+            <ul class="bank-list" id="bankList"></ul>
+          </div>
+          <div class="side-card">
+            <div class="label">Graph Window</div>
+            <div class="value" id="windowValue">x:[-10, 10]</div>
+          </div>
+        </aside>
       </section>
 
       <section class="keypad">
@@ -260,14 +557,21 @@
           <button class="k-btn" data-value="6">6</button>
           <button class="k-btn accent" data-value="-">-</button>
           <button class="k-btn accent" data-value="+">+</button>
-          <button class="k-btn func" data-value="^2">x^2</button>
+          <button class="k-btn accent" data-value="^">^</button>
 
           <button class="k-btn" data-value="1">1</button>
           <button class="k-btn" data-value="2">2</button>
           <button class="k-btn" data-value="3">3</button>
-          <button class="k-btn" data-value="0">0</button>
+          <button class="k-btn" data-value="x">x</button>
           <button class="k-btn" data-value=".">.</button>
           <button class="k-btn accent" id="equalsBtn">ENTER</button>
+
+          <button class="k-btn" data-value="0">0</button>
+          <button class="k-btn alt" data-value=",">,</button>
+          <button class="k-btn alt" data-value="^2">x^2</button>
+          <button class="k-btn alt" data-value="abs(">abs</button>
+          <button class="k-btn alt" data-value="floor(">floor</button>
+          <button class="k-btn alt" data-value="ceil(">ceil</button>
         </div>
       </section>
 
@@ -289,47 +593,211 @@
       const xMaxInput = document.getElementById("xMax");
       const samplesInput = document.getElementById("samples");
       const graphCanvas = document.getElementById("graphCanvas");
+      const graphLegend = document.getElementById("graphLegend");
+      const focusValue = document.getElementById("focusValue");
+      const windowValue = document.getElementById("windowValue");
+      const functionList = document.getElementById("functionList");
+      const bankList = document.getElementById("bankList");
       const ctx = graphCanvas.getContext("2d");
 
-      let mode = "rad";
-      let activeBank = "M1";
-      let memoryBanks = { M1: 0, M2: 0, M3: 0 };
-      let history = [];
+      const state = {
+        mode: "rad",
+        activeBank: "M1",
+        activeSlot: "Y1",
+        currentView: "home",
+        graphWindow: { x_min: -10, x_max: 10, samples: 300 },
+        graphFunctions: [],
+        memoryBanks: { M1: 0, M2: 0, M3: 0 },
+        history: [],
+      };
+
+      let stateSaveTimer = null;
+
+      function defaultGraphFunctions() {
+        return [
+          { slot: "Y1", expression: "", enabled: false, color: "#1f4f93" },
+          { slot: "Y2", expression: "", enabled: false, color: "#b33f62" },
+          { slot: "Y3", expression: "", enabled: false, color: "#2c8c5b" },
+          { slot: "Y4", expression: "", enabled: false, color: "#9a6700" },
+          { slot: "Y5", expression: "", enabled: false, color: "#5e3eb3" },
+          { slot: "Y6", expression: "", enabled: false, color: "#0f766e" },
+        ];
+      }
 
       function updateStatus(message) {
         statusEl.textContent = message;
       }
 
-      function updateReadout(result = "") {
-        const expression = expressionInput.value || "0";
-        expressionValue.textContent = expression;
-        resultValue.textContent = result || `${activeBank}: ${memoryBanks[activeBank]}`;
+      function activeExpressionValue() {
+        if (state.currentView === "y-editor") {
+          const activeFunction = state.graphFunctions.find((entry) => entry.slot === state.activeSlot);
+          return activeFunction?.expression || "0";
+        }
+        return expressionInput.value || "0";
       }
 
-      function addHistory(label, value) {
-        history.unshift({ label, value });
-        history = history.slice(0, 12);
-        historyList.innerHTML = history
-          .map((item) => `<li><span>${item.label}</span><strong>${item.value}</strong></li>`)
-          .join("");
+      function updateReadout(result = "") {
+        expressionValue.textContent = activeExpressionValue();
+        resultValue.textContent = result || `${state.activeBank}: ${state.memoryBanks[state.activeBank] ?? 0}`;
+        focusValue.textContent = `${state.currentView.toUpperCase()} · ${state.activeSlot}`;
+        windowValue.textContent = `x:[${state.graphWindow.x_min}, ${state.graphWindow.x_max}] • n:${state.graphWindow.samples}`;
+        modeLabel.textContent = `MODE: ${state.mode.toUpperCase()}`;
+      }
+
+      function currentInput() {
+        if (state.currentView !== "y-editor") {
+          return expressionInput;
+        }
+        return functionList.querySelector(`[data-slot-input="${state.activeSlot}"]`) || expressionInput;
       }
 
       function appendToken(token) {
-        expressionInput.value += token;
+        const input = currentInput();
+        input.value += token === "^2" ? "^2" : token;
+
+        if (input === expressionInput) {
+          updateReadout();
+          return;
+        }
+
+        const slot = input.dataset.slotInput;
+        const functionState = state.graphFunctions.find((entry) => entry.slot === slot);
+        if (functionState) {
+          functionState.expression = input.value;
+          functionState.enabled = Boolean(functionState.expression.trim()) || functionState.enabled;
+          scheduleStateSave();
+        }
         updateReadout();
       }
 
-      function clearGraph() {
+      function switchView(viewName) {
+        state.currentView = viewName;
+        document.querySelectorAll(".view").forEach((view) => {
+          view.classList.toggle("active", view.dataset.screen === viewName);
+        });
+        document.querySelectorAll(".tab-btn").forEach((button) => {
+          button.classList.toggle("active", button.dataset.view === viewName);
+        });
+        updateReadout();
+      }
+
+      function setActiveSlot(slot) {
+        state.activeSlot = slot;
+        renderFunctionRows();
+        updateReadout();
+      }
+
+      function addHistory(label, value, expression = "") {
+        state.history.unshift({ label, value, expression });
+        state.history = state.history.slice(0, 12);
+        historyList.innerHTML = state.history
+          .map(
+            (item, index) => `
+              <li>
+                <button class="history-button" data-history-index="${index}">
+                  <span class="history-text">${item.label}</span>
+                  <strong>${item.value}</strong>
+                </button>
+              </li>
+            `,
+          )
+          .join("");
+      }
+
+      function renderBankList() {
+        bankList.innerHTML = Object.entries(state.memoryBanks)
+          .map(
+            ([bank, value]) => `
+              <li class="bank-item ${bank === state.activeBank ? "active" : ""}">
+                <span>${bank}</span>
+                <strong>${Number(value).toFixed(6).replace(/\.0+$/, "").replace(/(\.\d*?)0+$/, "$1")}</strong>
+              </li>
+            `,
+          )
+          .join("");
+
+        document.querySelectorAll("[data-bank]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.bank === state.activeBank);
+        });
+      }
+
+      function renderFunctionRows() {
+        functionList.innerHTML = state.graphFunctions
+          .map(
+            (item) => `
+              <label class="function-row ${item.slot === state.activeSlot ? "active" : ""}" data-slot-row="${item.slot}">
+                <input type="checkbox" data-slot-toggle="${item.slot}" ${item.enabled ? "checked" : ""} />
+                <span class="swatch" style="background:${item.color};"></span>
+                <span class="slot-label">${item.slot}</span>
+                <input class="function-input" data-slot-input="${item.slot}" value="${item.expression.replace(/"/g, "&quot;")}" placeholder="Enter ${item.slot}" />
+              </label>
+            `,
+          )
+          .join("");
+
+        functionList.querySelectorAll("[data-slot-row]").forEach((row) => {
+          row.addEventListener("click", () => setActiveSlot(row.dataset.slotRow));
+        });
+
+        functionList.querySelectorAll("[data-slot-toggle]").forEach((toggle) => {
+          toggle.addEventListener("click", (event) => event.stopPropagation());
+          toggle.addEventListener("change", () => {
+            const functionState = state.graphFunctions.find((entry) => entry.slot === toggle.dataset.slotToggle);
+            if (!functionState) {
+              return;
+            }
+            functionState.enabled = toggle.checked;
+            scheduleStateSave();
+            updateReadout();
+          });
+        });
+
+        functionList.querySelectorAll("[data-slot-input]").forEach((input) => {
+          input.addEventListener("click", (event) => {
+            event.stopPropagation();
+            setActiveSlot(input.dataset.slotInput);
+          });
+          input.addEventListener("input", () => {
+            const functionState = state.graphFunctions.find((entry) => entry.slot === input.dataset.slotInput);
+            if (!functionState) {
+              return;
+            }
+            functionState.expression = input.value;
+            updateReadout();
+            scheduleStateSave();
+          });
+          input.addEventListener("focus", () => setActiveSlot(input.dataset.slotInput));
+        });
+      }
+
+      function renderLegend(functions = []) {
+        graphLegend.innerHTML = functions
+          .map(
+            (item) => `
+              <li class="legend-item">
+                <div class="legend-meta">
+                  <span class="swatch" style="background:${item.color};"></span>
+                  <span class="legend-text">${item.slot} = ${item.expression}</span>
+                </div>
+              </li>
+            `,
+          )
+          .join("");
+      }
+
+      function clearGraph(message = "Graph cleared") {
         ctx.fillStyle = "#e8f7d4";
         ctx.fillRect(0, 0, graphCanvas.width, graphCanvas.height);
+        renderLegend();
+        updateStatus(message);
       }
 
       function drawGrid(xMin, xMax, yMin, yMax) {
-        ctx.strokeStyle = "#b5c9a3";
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid");
         ctx.lineWidth = 1;
-        for (let i = 0; i <= 10; i += 1) {
-          const x = (i / 10) * graphCanvas.width;
-          const y = (i / 10) * graphCanvas.height;
+        for (let index = 0; index <= 10; index += 1) {
+          const x = (index / 10) * graphCanvas.width;
+          const y = (index / 10) * graphCanvas.height;
           ctx.beginPath();
           ctx.moveTo(x, 0);
           ctx.lineTo(x, graphCanvas.height);
@@ -340,9 +808,14 @@
           ctx.stroke();
         }
 
+        if (yMax === yMin) {
+          yMin -= 1;
+          yMax += 1;
+        }
+
         const zeroX = ((0 - xMin) / (xMax - xMin)) * graphCanvas.width;
         const zeroY = ((yMax - 0) / (yMax - yMin)) * graphCanvas.height;
-        ctx.strokeStyle = "#3d5a35";
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--axis");
         ctx.lineWidth = 1.4;
         ctx.beginPath();
         ctx.moveTo(zeroX, 0);
@@ -354,68 +827,176 @@
         ctx.stroke();
       }
 
-      function drawSegments(segments, xMin, xMax, yMin, yMax) {
-        ctx.strokeStyle = "#1f4f93";
-        ctx.lineWidth = 2;
-        segments.forEach((segment) => {
-          if (!segment.length) {
-            return;
-          }
-          ctx.beginPath();
-          segment.forEach(([x, y], index) => {
-            const px = ((x - xMin) / (xMax - xMin)) * graphCanvas.width;
-            const py = ((yMax - y) / (yMax - yMin)) * graphCanvas.height;
-            if (index === 0) {
-              ctx.moveTo(px, py);
-            } else {
-              ctx.lineTo(px, py);
+      function drawGraphSet(functions, xMin, xMax, yMin, yMax) {
+        functions.forEach((fn) => {
+          ctx.strokeStyle = fn.color;
+          ctx.lineWidth = 2;
+          fn.segments.forEach((segment) => {
+            if (!segment.length) {
+              return;
             }
+            ctx.beginPath();
+            segment.forEach(([x, y], index) => {
+              const px = ((x - xMin) / (xMax - xMin)) * graphCanvas.width;
+              const py = ((yMax - y) / (yMax - yMin)) * graphCanvas.height;
+              if (index === 0) {
+                ctx.moveTo(px, py);
+              } else {
+                ctx.lineTo(px, py);
+              }
+            });
+            ctx.stroke();
           });
-          ctx.stroke();
         });
       }
 
+      async function saveState() {
+        const payload = {
+          mode: state.mode,
+          active_bank: state.activeBank,
+          graph_window: state.graphWindow,
+          graph_functions: state.graphFunctions,
+        };
+
+        const response = await fetch("/api/state", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to save state");
+        }
+        state.mode = data.mode;
+        state.activeBank = data.active_bank;
+        state.memoryBanks = data.memory_banks;
+        state.graphWindow = data.graph_window;
+        state.graphFunctions = data.graph_functions;
+        renderBankList();
+        renderFunctionRows();
+        updateReadout();
+      }
+
+      function scheduleStateSave() {
+        window.clearTimeout(stateSaveTimer);
+        stateSaveTimer = window.setTimeout(async () => {
+          try {
+            await saveState();
+          } catch (error) {
+            updateStatus(error.message);
+          }
+        }, 220);
+      }
+
+      async function hydrateState() {
+        try {
+          const response = await fetch("/api/state");
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "Unable to load calculator state");
+          }
+
+          state.mode = data.mode;
+          state.activeBank = data.active_bank;
+          state.memoryBanks = data.memory_banks;
+          state.graphWindow = data.graph_window;
+          state.graphFunctions = data.graph_functions?.length ? data.graph_functions : defaultGraphFunctions();
+          xMinInput.value = state.graphWindow.x_min;
+          xMaxInput.value = state.graphWindow.x_max;
+          samplesInput.value = state.graphWindow.samples;
+
+          renderFunctionRows();
+          renderBankList();
+          updateReadout();
+          updateStatus("Calculator state restored");
+        } catch (error) {
+          state.graphFunctions = defaultGraphFunctions();
+          renderFunctionRows();
+          renderBankList();
+          updateReadout();
+          updateStatus(error.message);
+        }
+      }
+
       async function handleCalculate() {
-        const expression = expressionInput.value.trim();
+        const input = currentInput();
+        const expression = input.value.trim();
         if (!expression) {
           updateStatus("Enter an expression first");
           return;
         }
+
         try {
           const response = await fetch("/api/calc", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ expression, mode }),
+            body: JSON.stringify({ expression, mode: state.mode }),
           });
           const data = await response.json();
           if (!response.ok) {
             throw new Error(data.detail || "Calculation failed");
           }
-          expressionInput.value = String(data.result);
-          updateReadout(String(data.result));
-          addHistory(data.expression, data.result);
+
+          resultValue.textContent = String(data.result);
+          addHistory(data.expression, data.result, data.expression);
           updateStatus("Calculated");
         } catch (error) {
           updateStatus(error.message);
         }
       }
 
-      async function handleGraph() {
+      function promoteHomeExpressionToY1() {
         const expression = expressionInput.value.trim();
         if (!expression) {
-          updateStatus("Enter an expression before graphing");
-          return;
+          updateStatus("Enter an expression before sending it to Y1");
+          return false;
         }
 
-        const xMin = Number(xMinInput.value);
-        const xMax = Number(xMaxInput.value);
-        const samples = Number(samplesInput.value);
+        const slot = state.graphFunctions.find((entry) => entry.slot === "Y1");
+        if (!slot) {
+          return false;
+        }
+
+        slot.expression = expression;
+        slot.enabled = true;
+        state.activeSlot = "Y1";
+        renderFunctionRows();
+        scheduleStateSave();
+        updateStatus("Expression assigned to Y1");
+        return true;
+      }
+
+      function syncWindowInputsToState() {
+        state.graphWindow = {
+          x_min: Number(xMinInput.value),
+          x_max: Number(xMaxInput.value),
+          samples: Number(samplesInput.value),
+        };
+        updateReadout();
+      }
+
+      async function handleGraph() {
+        const enabledFunctions = state.graphFunctions.filter((entry) => entry.enabled && entry.expression.trim());
+        if (!enabledFunctions.length) {
+          if (!promoteHomeExpressionToY1()) {
+            updateStatus("Enable at least one Y slot or enter a HOME expression first");
+            return;
+          }
+        }
+
+        syncWindowInputsToState();
 
         try {
-          const response = await fetch("/api/graph", {
+          const response = await fetch("/api/graph-set", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ expression, mode, x_min: xMin, x_max: xMax, samples }),
+            body: JSON.stringify({
+              mode: state.mode,
+              x_min: state.graphWindow.x_min,
+              x_max: state.graphWindow.x_max,
+              samples: state.graphWindow.samples,
+              graph_functions: state.graphFunctions,
+            }),
           });
           const data = await response.json();
           if (!response.ok) {
@@ -428,27 +1009,22 @@
             yMin -= 1;
             yMax += 1;
           }
-          clearGraph();
+
+          clearGraph("Graph refreshed");
           drawGrid(data.x_min, data.x_max, yMin, yMax);
-          drawSegments(data.segments, data.x_min, data.x_max, yMin, yMax);
-          addHistory(`y=${expression}`, `window[${xMin}, ${xMax}]`);
-          updateStatus("Graph plotted");
+          drawGraphSet(data.functions, data.x_min, data.x_max, yMin, yMax);
+          renderLegend(data.functions);
+          addHistory("GRAPH", data.functions.map((item) => item.slot).join(", "));
+          switchView("graph");
         } catch (error) {
           updateStatus(error.message);
         }
       }
 
-      async function refreshMemory() {
-        const response = await fetch("/api/memory");
-        const data = await response.json();
-        memoryBanks = data.banks;
-        updateReadout();
-      }
-
       async function handleMemory(operation) {
         try {
-          const expression = expressionInput.value.trim();
-          const payload = { operation, bank: activeBank, mode };
+          const expression = currentInput().value.trim();
+          const payload = { operation, bank: state.activeBank, mode: state.mode };
 
           if (operation === "M+" || operation === "M-") {
             if (expression) {
@@ -468,67 +1044,132 @@
             throw new Error(data.detail || "Memory operation failed");
           }
 
-          memoryBanks = data.banks;
+          state.memoryBanks = data.banks;
+          state.activeBank = data.bank;
           if (operation === "MR") {
             appendToken(String(data.value));
           }
-          addHistory(`${operation} ${activeBank}`, data.value);
+          renderBankList();
+          addHistory(`${operation} ${state.activeBank}`, data.value);
           updateReadout();
-          updateStatus(`${operation} applied to ${activeBank}`);
+          updateStatus(`${operation} applied to ${state.activeBank}`);
         } catch (error) {
           updateStatus(error.message);
         }
       }
 
+      document.getElementById("calcBtn").addEventListener("click", handleCalculate);
       document.getElementById("equalsBtn").addEventListener("click", handleCalculate);
       document.getElementById("graphBtn").addEventListener("click", handleGraph);
-      document.getElementById("clearGraphBtn").addEventListener("click", () => {
-        clearGraph();
-        updateStatus("Graph cleared");
+      document.getElementById("homeGraphBtn").addEventListener("click", handleGraph);
+      document.getElementById("graphFromWindowBtn").addEventListener("click", handleGraph);
+      document.getElementById("traceHomeBtn").addEventListener("click", () => switchView("home"));
+      document.getElementById("useAsY1Btn").addEventListener("click", () => {
+        if (promoteHomeExpressionToY1()) {
+          switchView("y-editor");
+        }
       });
-      document.getElementById("modeBtn").addEventListener("click", () => {
-        mode = mode === "rad" ? "deg" : "rad";
-        modeLabel.textContent = `MODE: ${mode.toUpperCase()}`;
-        updateStatus(`Mode switched to ${mode.toUpperCase()}`);
+      document.getElementById("clearGraphBtn").addEventListener("click", () => clearGraph());
+      document.getElementById("saveWindowBtn").addEventListener("click", async () => {
+        try {
+          syncWindowInputsToState();
+          await saveState();
+          updateStatus("Window saved");
+        } catch (error) {
+          updateStatus(error.message);
+        }
+      });
+      document.getElementById("zoomStdBtn").addEventListener("click", () => {
+        state.graphWindow = { x_min: -10, x_max: 10, samples: 300 };
+        xMinInput.value = state.graphWindow.x_min;
+        xMaxInput.value = state.graphWindow.x_max;
+        samplesInput.value = state.graphWindow.samples;
+        scheduleStateSave();
+        updateReadout();
+        updateStatus("Standard window restored");
+      });
+      document.getElementById("modeBtn").addEventListener("click", async () => {
+        state.mode = state.mode === "rad" ? "deg" : "rad";
+        try {
+          await saveState();
+          updateStatus(`Mode switched to ${state.mode.toUpperCase()}`);
+        } catch (error) {
+          updateStatus(error.message);
+        }
+      });
+
+      document.querySelectorAll(".tab-btn").forEach((button) => {
+        button.addEventListener("click", () => switchView(button.dataset.view));
       });
 
       document.querySelectorAll("[data-bank]").forEach((button) => {
-        button.addEventListener("click", () => {
-          activeBank = button.dataset.bank;
+        button.addEventListener("click", async () => {
+          state.activeBank = button.dataset.bank;
+          renderBankList();
           updateReadout();
-          updateStatus(`Using ${activeBank}`);
+          try {
+            await saveState();
+            updateStatus(`Using ${state.activeBank}`);
+          } catch (error) {
+            updateStatus(error.message);
+          }
         });
       });
 
       document.querySelectorAll("[data-memory]").forEach((button) => {
-        button.addEventListener("click", () => {
-          handleMemory(button.dataset.memory);
-        });
+        button.addEventListener("click", () => handleMemory(button.dataset.memory));
       });
 
       document.querySelectorAll("[data-value]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const token = button.dataset.value;
-          if (token === "^2") {
-            appendToken("^2");
-            return;
-          }
-          appendToken(token);
-        });
+        button.addEventListener("click", () => appendToken(button.dataset.value));
       });
 
       document.querySelectorAll("[data-action]").forEach((button) => {
         button.addEventListener("click", () => {
-          const action = button.dataset.action;
-          if (action === "clear") {
-            expressionInput.value = "";
-            updateReadout("0");
+          const input = currentInput();
+          if (button.dataset.action === "clear") {
+            input.value = "";
           }
-          if (action === "delete") {
-            expressionInput.value = expressionInput.value.slice(0, -1);
-            updateReadout();
+          if (button.dataset.action === "delete") {
+            input.value = input.value.slice(0, -1);
           }
+
+          if (input.dataset.slotInput) {
+            const functionState = state.graphFunctions.find((entry) => entry.slot === input.dataset.slotInput);
+            if (functionState) {
+              functionState.expression = input.value;
+              if (!input.value.trim()) {
+                functionState.enabled = false;
+              }
+              scheduleStateSave();
+            }
+          }
+          updateReadout(input.value || "0");
         });
+      });
+
+      historyList.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-history-index]");
+        if (!button) {
+          return;
+        }
+        const item = state.history[Number(button.dataset.historyIndex)];
+        if (!item?.expression) {
+          return;
+        }
+        const input = currentInput();
+        input.value = item.expression;
+        if (input.dataset.slotInput) {
+          const functionState = state.graphFunctions.find((entry) => entry.slot === input.dataset.slotInput);
+          if (functionState) {
+            functionState.expression = item.expression;
+            functionState.enabled = true;
+            renderFunctionRows();
+            scheduleStateSave();
+          }
+        }
+        updateReadout();
+        updateStatus("History item loaded");
       });
 
       document.addEventListener("keydown", (event) => {
@@ -543,20 +1184,25 @@
           return;
         }
         if (event.key === "Escape") {
-          expressionInput.value = "";
+          currentInput().value = "";
           updateReadout("0");
           return;
         }
         if (event.key === "Backspace" && document.activeElement !== expressionInput) {
+          return;
+        }
+        if (event.key === "F2") {
           event.preventDefault();
-          expressionInput.value = expressionInput.value.slice(0, -1);
-          updateReadout();
+          switchView("y-editor");
         }
       });
 
-      clearGraph();
-      refreshMemory();
+      clearGraph("Ready");
+      state.graphFunctions = defaultGraphFunctions();
+      renderFunctionRows();
+      renderBankList();
       updateReadout();
+      hydrateState();
     </script>
   </body>
 </html>

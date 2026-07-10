@@ -1,0 +1,52 @@
+{
+  "mode": "rad",
+  "active_bank": "M1",
+  "memory_banks": {
+    "M1": 0.0,
+    "M2": 0.0,
+    "M3": 0.0
+  },
+  "graph_window": {
+    "x_min": -10.0,
+    "x_max": 10.0,
+    "samples": 300
+  },
+  "graph_functions": [
+    {
+      "slot": "Y1",
+      "expression": "ln(8)",
+      "enabled": true,
+      "color": "#1f4f93"
+    },
+    {
+      "slot": "Y2",
+      "expression": "",
+      "enabled": false,
+      "color": "#b33f62"
+    },
+    {
+      "slot": "Y3",
+      "expression": "",
+      "enabled": false,
+      "color": "#2c8c5b"
+    },
+    {
+      "slot": "Y4",
+      "expression": "",
+      "enabled": false,
+      "color": "#9a6700"
+    },
+    {
+      "slot": "Y5",
+      "expression": "",
+      "enabled": false,
+      "color": "#5e3eb3"
+    },
+    {
+      "slot": "Y6",
+      "expression": "",
+      "enabled": false,
+      "color": "#0f766e"
+    }
+  ]
+}
