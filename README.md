@@ -1,15 +1,19 @@
-# TI-84 Plus Replica Graphing Calculator
+# Scientific Calculator
 
-A browser-based graphing calculator built with FastAPI and a TI-84 Plus-inspired frontend. The UI closely replicates the physical device — complete with the green LCD screen, dark slate shell, color-coded keypad rows, and secondary/ALPHA key legends printed above each key.
+A browser-based scientific and graphing calculator built with FastAPI and a device-inspired frontend. The UI includes a green LCD-style screen, dark slate shell, color-coded keypad rows, and secondary/ALPHA legends above each key.
 
 ## Project Description
 
-This is an interactive graphing calculator web app that authentically mimics the TI-84 Plus experience in the browser. It evaluates scientific expressions with a safe AST-based engine, plots up to six simultaneous functions on a live canvas, manages persistent calculator state, and supports memory operations across three named banks.
+This interactive calculator web app provides a hardware-style graphing experience in the browser. It evaluates scientific expressions with a safe AST-based engine, plots up to six simultaneous functions on a live canvas, manages persistent calculator state, and supports memory operations across three named banks.
+
+## Disclaimer
+
+This project is for educational purposes only.
 
 ## Highlights
 
-- **Authentic TI-84 Plus shell** — slate-gray device body, green phosphor LCD bezel, branded top-case strip reading "Graphing Calculator" with a "2nd labels mimic device functions" note
-- **Accurate function-key bar** — five blue tab buttons (Y=, WINDOW, ZOOM, TRACE, GRAPH) with gold `2nd` labels (Stat Plot, TblSet, Format, Calc, Table) matching real TI-84 row ordering
+- **Hardware-style shell** — slate-gray device body, green phosphor LCD bezel, branded top-case strip, and realistic key labeling
+- **Accurate function-key bar** — five blue tab buttons (Y=, WINDOW, ZOOM, TRACE, GRAPH) with gold `2nd` labels (Stat Plot, TblSet, Format, Calc, Table)
 - **11-key utility strip** — 2nd, MODE, DEL, ALPHA, X,T,θ,n, STAT, MATH, APPS, PRGM, VARS, CLEAR with gold/blue secondary legends
 - **Full 5×7 main keypad** — gray scientific-function keys (SIN, COS, TAN, LOG, LN, x², x⁻¹), black navigation/operator keys, orange arithmetic keys (÷, ×, −, +), and a tall double-height ENTER button
 - **Dedicated right-side auxiliary grid** — Y=, WINDOW, ZOOM, GRAPH, QUIT, π, e, ABS, FLOOR, CEIL, ASIN, ACOS, ATAN, 10ˣ, eˣ, ENTER, SAVE, ZOOM STD, DRAW, FACT
@@ -41,7 +45,7 @@ This is an interactive graphing calculator web app that authentically mimics the
 ├── calculator_state.json    # Persisted calculator state (auto-created on first save)
 ├── requirements.txt         # Python dependencies
 ├── static/
-│   └── index.html           # TI-84-style frontend: shell, screen, keypad, canvas, JS logic
+│   └── index.html           # Scientific calculator frontend: shell, screen, keypad, canvas, JS logic
 └── tests/
     └── test_calculator.py   # Unit and API tests
 ```

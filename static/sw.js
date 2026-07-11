@@ -1,4 +1,4 @@
-const CACHE_NAME = "ti84-pwa-v1";
+const CACHE_NAME = "scientific-calculator-pwa-v1";
 const PRECACHE_URLS = ["/", "/static/index.html", "/static/manifest.webmanifest", "/static/icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -10,7 +10,9 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.map((key) => (key.startsWith("ti84-pwa-") && key !== CACHE_NAME ? caches.delete(key) : null)))
+        Promise.all(
+          keys.map((key) => (key.startsWith("scientific-calculator-pwa-") && key !== CACHE_NAME ? caches.delete(key) : null))
+        )
       )
       .then(() => self.clients.claim())
   );
