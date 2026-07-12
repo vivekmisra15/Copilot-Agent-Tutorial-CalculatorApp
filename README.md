@@ -257,6 +257,12 @@ pip install -r requirements.txt
 .venv/bin/python -m uvicorn calculator:app --host 127.0.0.1 --port 8000
 ```
 
+Or use the shortcut:
+
+```bash
+make run
+```
+
 ### 4. Open in browser
 
 | URL | Purpose |
@@ -269,6 +275,12 @@ pip install -r requirements.txt
 
 ```bash
 .venv/bin/python -m pytest -q
+```
+
+Or use:
+
+```bash
+make test
 ```
 
 ## Example Expressions
@@ -308,6 +320,36 @@ sqrt(abs(x))
 - **Discontinuity handling**: The graph engine detects large vertical jumps and sign flips with high magnitude, splitting the plot into separate segments to avoid drawing phantom lines across asymptotes.
 - **Multi-function graphing**: Up to six color-coded functions (Y1–Y6) can be plotted simultaneously. Each slot has an assigned color; the canvas auto-scales to the combined y-range.
 - **Responsive layout**: The device shell scales from desktop (706 px wide) down to mobile, with the side panel and keypad reflowing to fit smaller screens.
+
+## Release Checklist
+
+Run this checklist before opening a release PR.
+
+- [ ] Create and activate `.venv`
+- [ ] Install dependencies with `pip install -r requirements.txt`
+- [ ] Run full tests with `.venv/bin/python -m pytest -q`
+- [ ] Start app with `make run` and verify the UI loads at `http://127.0.0.1:8000`
+- [ ] Manually verify calculator flow: evaluate expression, switch RAD/DEG, and check history entry
+- [ ] Manually verify graph flow: open Y= view, set at least two enabled functions, render graph, confirm no crash on discontinuities
+- [ ] Manually verify memory flow: `M+`, `M-`, `MR`, `MC` for one bank
+- [ ] Verify state persistence: set mode/window/functions, restart server, confirm state survives
+- [ ] Verify API endpoints return expected shape/status: `/api/calc`, `/api/graph`, `/api/graph-set`, `/api/memory`, `/api/state`
+- [ ] Verify PWA assets are served: `manifest.webmanifest` and `/sw.js`
+- [ ] Confirm README examples and endpoint descriptions match actual behavior
+
+## PR Description Checklist
+
+Use this structure when opening PRs for release prep or hardening changes.
+
+1. **Summary**: One paragraph describing what changed and why.
+2. **Scope**: Bullet list grouped by area (tests, cleanup, docs, release process).
+3. **Risk Level**: Low/Medium/High with one-line rationale.
+4. **Validation**:
+  - Test command run and result
+  - Manual checks completed
+  - Any known limitations
+5. **Reviewer Guide**: File-by-file review order and what to focus on.
+6. **Release Notes**: User-visible changes and operational notes (if any).
 
 ## License
 

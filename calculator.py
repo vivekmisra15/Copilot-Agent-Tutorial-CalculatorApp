@@ -3,6 +3,7 @@ import json
 import math
 import operator
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
@@ -117,7 +118,7 @@ def _default_graph_functions() -> list[dict[str, str | bool]]:
     ]
 
 
-def _default_state() -> dict:
+def _default_state() -> dict[str, Any]:
     return {
         "mode": "rad",
         "active_bank": "M1",
@@ -156,7 +157,7 @@ def _normalize_window(x_min: float, x_max: float, samples: int) -> dict[str, flo
     return {"x_min": float(x_min), "x_max": float(x_max), "samples": int(samples)}
 
 
-def _sanitize_graph_functions(raw_functions: list[dict] | None) -> list[dict[str, str | bool]]:
+def _sanitize_graph_functions(raw_functions: list[dict[str, Any]] | None) -> list[dict[str, str | bool]]:
     defaults_by_slot = {item["slot"]: item for item in _default_graph_functions()}
     normalized_by_slot = {slot: dict(defaults_by_slot[slot]) for slot in FUNCTION_SLOTS}
 
@@ -172,7 +173,7 @@ def _sanitize_graph_functions(raw_functions: list[dict] | None) -> list[dict[str
     return [normalized_by_slot[slot] for slot in FUNCTION_SLOTS]
 
 
-def _load_state() -> dict:
+def _load_state() -> dict[str, Any]:
     state = _default_state()
     if not STATE_FILE.exists():
         return state
@@ -266,7 +267,7 @@ def compile_expression(expression: str) -> CompiledExpression:
     return CompiledExpression(source=stripped_expression, tree=tree, identifiers=identifiers)
 
 
-def _collect_identifiers(node) -> set[str]:
+def _collect_identifiers(node: ast.AST) -> set[str]:
     if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
         return set()
 
@@ -317,7 +318,7 @@ def _sample_graph_expression(
     x_min: float,
     x_max: float,
     samples: int,
-):
+) -> dict[str, Any]:
     segments = []
     current_segment = []
     y_values = []
@@ -340,6 +341,7 @@ def _sample_graph_expression(
 
         if current_segment:
             previous_y = current_segment[-1][1]
+            # Split lines at likely asymptotes to avoid drawing false vertical connectors.
             jump_threshold = max(80.0, abs(previous_y) * 4)
             sign_flip_with_high_magnitude = previous_y * y_value < 0 and max(abs(previous_y), abs(y_value)) > 20
             if abs(y_value - previous_y) > jump_threshold or sign_flip_with_high_magnitude:
@@ -380,7 +382,7 @@ def evaluate_graph_set(
     x_min: float = -10,
     x_max: float = 10,
     samples: int = 300,
-):
+) -> dict[str, Any]:
     normalized_mode = _normalize_mode(mode)
     normalized_window = _normalize_window(x_min, x_max, samples)
     normalized_functions = _sanitize_graph_functions(graph_functions)
@@ -429,7 +431,7 @@ def evaluate_graph_set(
     }
 
 
-def _eval_node(node, mode: str = "rad", variables: dict[str, float] | None = None):
+def _eval_node(node: ast.AST, mode: str = "rad", variables: dict[str, float] | None = None) -> float | int:
     variables = variables or {}
 
     if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
@@ -482,7 +484,7 @@ def _eval_node(node, mode: str = "rad", variables: dict[str, float] | None = Non
     raise ValueError("Unsupported expression")
 
 
-def apply_memory(operation: str, bank: str, value: float):
+def apply_memory(operation: str, bank: str, value: float) -> dict[str, Any]:
     op = operation.upper().strip()
     memory_bank = _normalize_bank(bank)
 
@@ -507,7 +509,7 @@ def apply_memory(operation: str, bank: str, value: float):
     }
 
 
-def _state_payload() -> dict:
+def _state_payload() -> dict[str, Any]:
     return {
         "mode": APP_STATE["mode"],
         "active_bank": APP_STATE["active_bank"],
@@ -520,12 +522,16 @@ def _state_payload() -> dict:
 
 @app.get("/")
 def read_root():
-    return FileResponse("static/index.html")
+    return FileResponse("static/index.html", headers={"Cache-Control": "no-store"})
 
 
 @app.get("/sw.js")
 def service_worker():
-    return FileResponse("static/sw.js", media_type="application/javascript")
+    return FileResponse(
+        "static/sw.js",
+        media_type="application/javascript",
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/api/state")

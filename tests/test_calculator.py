@@ -52,6 +52,27 @@ def test_invalid_expression():
         evaluate_expression("2 +")
 
 
+def test_invalid_mode_rejected():
+    with pytest.raises(ValueError):
+        evaluate_expression("2+2", mode="grad")
+
+
+def test_factorial_requires_non_negative_integer():
+    with pytest.raises(ValueError):
+        evaluate_expression("factorial(-1)")
+
+    with pytest.raises(ValueError):
+        evaluate_expression("factorial(2.5)")
+
+
+def test_math_domain_errors_surface():
+    with pytest.raises(ValueError):
+        evaluate_expression("ln(-1)")
+
+    with pytest.raises(ValueError):
+        evaluate_expression("sqrt(-1)")
+
+
 def test_graph_discontinuity_generates_segments():
     graph_data = evaluate_graph("1/x", x_min=-5, x_max=5, samples=300)
     assert len(graph_data["segments"]) >= 2
@@ -62,10 +83,24 @@ def test_graph_invalid_window():
         evaluate_graph("x", x_min=5, x_max=5)
 
 
+def test_graph_samples_bounds_enforced():
+    with pytest.raises(ValueError):
+        evaluate_graph("x", samples=39)
+
+    with pytest.raises(ValueError):
+        evaluate_graph("x", samples=2001)
+
+
 def test_calc_api_backward_compatible():
     response = client.post("/api/calc", json={"expression": "2+3*4", "mode": "rad"})
     assert response.status_code == 200
     assert response.json()["result"] == 14
+
+
+def test_calc_api_rejects_unknown_identifier():
+    response = client.post("/api/calc", json={"expression": "unknown_var + 1", "mode": "rad"})
+    assert response.status_code == 400
+    assert "Unknown identifier" in response.json()["detail"]
 
 
 def test_graph_api_response_shape():
@@ -103,6 +138,12 @@ def test_memory_api_flow():
     assert MEMORY_BANKS["M1"] == 0
 
 
+def test_memory_api_rejects_invalid_bank():
+    response = client.post("/api/memory", json={"operation": "MR", "bank": "M9"})
+    assert response.status_code == 400
+    assert "bank must be one of" in response.json()["detail"]
+
+
 def test_state_api_persists_graph_slots_and_window():
     response = client.post(
         "/api/state",
@@ -130,6 +171,23 @@ def test_state_api_persists_graph_slots_and_window():
     assert fetched_state.json()["graph_functions"][0]["enabled"] is True
 
 
+def test_state_api_partial_update_preserves_existing_window():
+    response = client.post(
+        "/api/state",
+        json={
+            "graph_window": {"x_min": -4, "x_max": 4, "samples": 180},
+            "mode": "rad",
+        },
+    )
+    assert response.status_code == 200
+
+    mode_only_update = client.post("/api/state", json={"mode": "deg"})
+    assert mode_only_update.status_code == 200
+    payload = mode_only_update.json()
+    assert payload["mode"] == "deg"
+    assert payload["graph_window"] == {"x_min": -4.0, "x_max": 4.0, "samples": 180}
+
+
 def test_graph_set_api_returns_multiple_functions():
     response = client.post(
         "/api/graph-set",
@@ -151,3 +209,19 @@ def test_graph_set_api_returns_multiple_functions():
     assert payload["functions"][0]["slot"] == "Y1"
     assert payload["functions"][1]["slot"] == "Y2"
     assert payload["y_min"] <= payload["y_max"]
+
+
+def test_graph_set_api_rejects_no_enabled_functions():
+    response = client.post(
+        "/api/graph-set",
+        json={
+            "mode": "rad",
+            "graph_functions": [
+                {"slot": "Y1", "expression": "sin(x)", "enabled": False},
+                {"slot": "Y2", "expression": "", "enabled": True},
+            ],
+        },
+    )
+
+    assert response.status_code == 400
+    assert "No enabled graph functions" in response.json()["detail"]
